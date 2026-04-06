@@ -9,4 +9,7 @@
 - Business Analyst Dev [Nisrina Azahra]
 - Business Analyst Dev [Soraya Nazmi]
 ## Teknologi yang digunakan
-- Masih didiskusikan
+- Frontend: JavaScript  (React.js)
+- Backend: PHP, JavaScript
+- Database: MySQL
+- Tools Pendukung: GitHub, Figma, Postman
