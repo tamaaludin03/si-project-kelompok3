@@ -98,4 +98,10 @@ export class AuthService {
       nip: user.nip,
     };
   }
+
+  async logout() {
+    return {
+      message: 'Logout berhasil',
+    };
+  }
 }
