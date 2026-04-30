@@ -20,6 +20,9 @@ model Pegawai {
   failedLoginAttempts  Int       @default(0)
   cuti                 Cuti[]
   izin                 Izin[]
+  email                String?
+  no_hp                String?
+
 
   @@map("pegawai")
 }
