@@ -4,7 +4,19 @@ import { PrismaService } from '../../prisma.service';
 @Injectable()
 export class DashboardService {
   constructor(private readonly prisma: PrismaService) {}
+  
+  async getAdminDashboardData(role: string) {
+  const stats = await this.prisma.pegawai.groupBy({
+    by: ['jabatan'],
+    _count: { nip: true },
+  });
 
+  return {
+    message: 'Dashboard Admin',
+    totalPegawai: await this.prisma.pegawai.count(),
+    statsByJabatan: stats,
+  };
+}
   private startOfDay(date: Date): Date {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate());
   }
