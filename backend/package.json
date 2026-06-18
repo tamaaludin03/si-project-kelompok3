@@ -21,6 +21,7 @@
     "typescript": "^6.0.3"
   },
   "scripts": {
+    "prebuild": "prisma generate",
     "build": "nest build",
     "start": "nest start",
     "start:dev": "nest start --watch",
