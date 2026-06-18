@@ -21,10 +21,12 @@
     "typescript": "^6.0.3"
   },
   "scripts": {
-    "start": "nest start",
+    "build": "prisma generate && nest build",
+    "start": "node dist/main",
     "start:dev": "nest start --watch",
     "prisma:generate": "prisma generate",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio",
+    "postinstall": "prisma generate"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.21",

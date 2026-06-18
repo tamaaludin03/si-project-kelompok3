@@ -8,7 +8,12 @@ export class PrismaService
 {
   constructor() {
     super({
-      log: ['query', 'info', 'warn', 'error'],
+      datasources: {
+        db: {
+          url: process.env.DATABASE_URL,
+        },
+      },
+      log: ['warn', 'error'],
       errorFormat: 'pretty',
     });
   }
