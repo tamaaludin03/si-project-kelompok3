@@ -26,8 +26,7 @@
     "start:dev": "nest start --watch",
     "start:prod": "node dist/main",
     "prisma:generate": "prisma generate",
-    "prisma:studio": "prisma studio",
-    "postinstall": "prisma generate"
+    "prisma:studio": "prisma studio"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.21",
