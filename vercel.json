@@ -7,8 +7,7 @@
     "backend": {
       "root": "backend",
       "framework": null,
-      "buildCommand": "npm run build",
-      "outputDirectory": "dist"
+      "buildCommand": "npm run build"
     }
   }
 }
