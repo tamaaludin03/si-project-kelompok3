@@ -1,0 +1,18 @@
+node_modules/
+dist/
+
+# Environment variables
+.env
+.env.*
+
+# Generated
+/src/generated/prisma
+
+# Uploads (user-uploaded files)
+uploads/
+
+# Logs
+*.log
+
+# Debug scripts output
+docs/

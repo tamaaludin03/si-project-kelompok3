@@ -1,0 +1,197 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Pegawai {
+  id                    Int       @id @default(autoincrement())
+  username              String    @unique @db.VarChar(100)
+  password              String
+  nip                   String?   @unique @db.VarChar(50)
+  nama                  String?   @db.VarChar(150)
+  jabatan               String?
+  unit                  String?   @db.VarChar(100)
+  jenis_pegawai         String?   @db.VarChar(50)
+  tanggal_lahir         DateTime? @db.Date
+  email                 String?
+  no_hp                 String?
+  ttd_digital           String?
+  must_change_password  Boolean   @default(true)
+  failedLoginAttempts   Int       @default(0)
+  role                  String    @default("pegawai") @db.VarChar(20)
+  internal_role         String?   @db.VarChar(30)
+  portal_pegawai_access Boolean   @default(true)
+  is_nakes              Boolean   @default(false)
+  jenis_kelamin         String?   @db.VarChar(1)
+  nomor_str             String?   @db.VarChar(100)
+  str_seumur_hidup      Boolean   @default(false)
+  nomor_sip             String?   @db.VarChar(100)
+  tanggal_terbit_sip    DateTime? @db.Date
+  expired_sip           DateTime? @db.Date
+
+  cuti          Cuti[]
+  izin          Izin[]
+  notifications Notification[]
+
+  @@map("pegawai")
+}
+
+model Cuti {
+  id                      Int       @id @default(autoincrement())
+  pegawaiId               Int       @map("pegawai_id")
+  jenis_cuti              String    @db.VarChar(50)
+  tanggal_mulai           DateTime  @db.Date
+  tanggal_selesai         DateTime  @db.Date
+  alasan                  String?
+  tujuan_cuti             String?
+  alamat_selama_cuti      String?
+  no_hp_selama_cuti       String?   @db.VarChar(30)
+  tanggal_kembali         DateTime? @db.Date
+  penyerahan_tugas_kepada String?
+  jabatan_pengganti       String?
+  catatan_pegawai         String?
+  is_urgent               Boolean   @default(false)
+  status                  String    @default("pending") @db.VarChar(30)
+  created_at              DateTime  @default(now()) @db.Timestamp(6)
+  updated_at              DateTime  @default(now()) @updatedAt
+
+  status_kaur          String?   @db.VarChar(30)
+  approved_by_kaur     String?   @db.VarChar(50)
+  approved_at_kaur     DateTime? @db.Timestamp(6)
+  catatan_kaur         String?
+  rejected_reason_kaur String?
+
+  status_kabag          String?   @db.VarChar(30)
+  approved_by_kabag     String?   @db.VarChar(50)
+  approved_at_kabag     DateTime? @db.Timestamp(6)
+  catatan_kabag         String?
+  rejected_reason_kabag String?
+
+  status_direktur          String?   @db.VarChar(30)
+  approved_by_direktur     String?   @db.VarChar(50)
+  approved_at_direktur     DateTime? @db.Timestamp(6)
+  catatan_direktur         String?
+  rejected_reason_direktur String?
+
+  status_direksi          String?   @db.VarChar(30)
+  approved_by_direksi     String?   @db.VarChar(50)
+  approved_at_direksi     DateTime? @db.Timestamp(6)
+  catatan_direksi         String?
+  rejected_reason_direksi String?
+
+  surat_cuti_diterbitkan Boolean   @default(false)
+  nomor_surat            String?   @db.VarChar(100)
+  tanggal_surat          DateTime? @db.Date
+
+  pegawai  Pegawai             @relation(fields: [pegawaiId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  lampiran LampiranPengajuan[]
+
+  @@map("cuti")
+}
+
+model Izin {
+  id          Int      @id @default(autoincrement())
+  pegawaiId   Int      @map("pegawai_id")
+  jenis_izin  String   @db.VarChar(50)
+  tanggal     DateTime @db.Date
+  jam_mulai   String?  @db.VarChar(10)
+  jam_selesai String?  @db.VarChar(10)
+  alasan      String?
+  is_urgent   Boolean  @default(false)
+  status      String   @default("pending") @db.VarChar(30)
+  created_at  DateTime @default(now()) @db.Timestamp(6)
+  updated_at  DateTime @default(now()) @updatedAt
+
+  status_kaur          String?   @db.VarChar(30)
+  approved_by_kaur     String?   @db.VarChar(50)
+  approved_at_kaur     DateTime? @db.Timestamp(6)
+  catatan_kaur         String?
+  rejected_reason_kaur String?
+
+  status_kabag          String?   @db.VarChar(30)
+  approved_by_kabag     String?   @db.VarChar(50)
+  approved_at_kabag     DateTime? @db.Timestamp(6)
+  catatan_kabag         String?
+  rejected_reason_kabag String?
+
+  status_direktur          String?   @db.VarChar(30)
+  approved_by_direktur     String?   @db.VarChar(50)
+  approved_at_direktur     DateTime? @db.Timestamp(6)
+  catatan_direktur         String?
+  rejected_reason_direktur String?
+
+  status_direksi          String?   @db.VarChar(30)
+  approved_by_direksi     String?   @db.VarChar(50)
+  approved_at_direksi     DateTime? @db.Timestamp(6)
+  catatan_direksi         String?
+  rejected_reason_direksi String?
+
+  pegawai  Pegawai             @relation(fields: [pegawaiId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  lampiran LampiranPengajuan[]
+
+  @@map("izin")
+}
+
+model LampiranPengajuan {
+  id          Int      @id @default(autoincrement())
+  cutiId      Int?     @map("cuti_id")
+  izinId      Int?     @map("izin_id")
+  nama_file   String   @db.VarChar(255)
+  path_file   String
+  tipe_file   String?  @db.VarChar(100)
+  ukuran_file Int?
+  uploaded_at DateTime @default(now()) @db.Timestamp(6)
+
+  cuti Cuti? @relation(fields: [cutiId], references: [id], onDelete: Cascade)
+  izin Izin? @relation(fields: [izinId], references: [id], onDelete: Cascade)
+
+  @@map("lampiran_pengajuan")
+}
+
+model Notification {
+  id          Int      @id @default(autoincrement())
+  pegawaiId   Int?     @map("pegawai_id")
+  target_role String?  @db.VarChar(50)
+  title       String   @db.VarChar(150)
+  message     String
+  type        String   @default("info") @db.VarChar(50)
+  entity      String?  @db.VarChar(100)
+  entity_id   String?  @db.VarChar(100)
+  is_read     Boolean  @default(false)
+  created_at  DateTime @default(now()) @db.Timestamp(6)
+
+  pegawai Pegawai? @relation(fields: [pegawaiId], references: [id], onDelete: Cascade)
+
+  @@map("notification")
+}
+
+model UnitBagian {
+  id          Int      @id @default(autoincrement())
+  nama_unit   String   @unique @db.VarChar(100)
+  kepala_unit String?  @db.VarChar(150)
+  status      String   @default("aktif") @db.VarChar(30)
+  created_at  DateTime @default(now()) @db.Timestamp(6)
+  updated_at  DateTime @default(now()) @updatedAt
+
+  @@map("unit_bagian")
+}
+
+model AuditLog {
+  id          Int      @id @default(autoincrement())
+  actor_nip   String?  @db.VarChar(50)
+  actor_name  String?  @db.VarChar(150)
+  actor_role  String?  @db.VarChar(50)
+  action      String   @db.VarChar(100)
+  entity      String   @db.VarChar(100)
+  entity_id   String?  @db.VarChar(100)
+  description String?
+  old_value   Json?
+  new_value   Json?
+  created_at  DateTime @default(now()) @db.Timestamp(6)
+
+  @@map("audit_log")
+}

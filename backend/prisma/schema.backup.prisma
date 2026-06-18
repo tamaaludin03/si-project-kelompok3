@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Pegawai {
+  id                   Int      @id @default(autoincrement())
+  nip                  String   @unique
+  nama                 String
+  jabatan              String
+  password             String
+  must_change_password Boolean  @default(true)
+  role                 String   @default("pegawai")
+  tanggal_lahir        String?
+  failedLoginAttempts  Int      @default(0)
+
+  cuti Cuti[]
+  izin Izin[]
+
+  @@map("pegawai")
+}
+
+model Cuti {
+  id              Int      @id @default(autoincrement())
+  pegawaiId       Int      @map("pegawai_id")
+  pegawai         Pegawai  @relation(fields: [pegawaiId], references: [id])
+  jenis_cuti      String
+  tanggal_mulai   DateTime
+  tanggal_selesai DateTime
+  alasan          String?
+  status          String   @default("pending")
+  created_at      DateTime @default(now())
+
+  @@map("cuti")
+}
+
+model Izin {
+  id           Int      @id @default(autoincrement())
+  pegawaiId    Int      @map("pegawai_id")
+  pegawai      Pegawai  @relation(fields: [pegawaiId], references: [id])
+  jenis_izin   String
+  tanggal      DateTime
+  jam_mulai    String?
+  jam_selesai  String?
+  alasan       String?
+  status       String   @default("pending")
+  created_at   DateTime @default(now())
+
+  @@map("izin")
+}

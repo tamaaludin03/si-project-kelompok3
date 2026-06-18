@@ -1,0 +1,25 @@
+"use client";
+
+import SdmSidebar from "@/components/sidebar/SdmSidebar";
+import PageTransition from "@/components/PageTransition";
+
+export default function SdmLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="min-h-screen bg-transparent">
+      {/* Fixed sidebar rendered outside flex flow */}
+      <SdmSidebar />
+
+      {/* pl-0: sidebar starts at left:0, spacer aligns with it */}
+      <div className="flex min-h-screen gap-5 p-4 pl-0">
+        {/* Spacer matching collapsed sidebar width (56px = w-14) */}
+        <aside className="hidden shrink-0 lg:block" style={{ width: "var(--sidebar-w, 3.5rem)", transition: "width 0.22s cubic-bezier(0.4,0,0.2,1)" }} aria-hidden="true" />
+
+        <main className="min-w-0 flex-1 overflow-hidden bg-transparent">
+          <div className="mx-auto w-full max-w-[1500px] px-2 py-0">
+            <PageTransition>{children}</PageTransition>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}

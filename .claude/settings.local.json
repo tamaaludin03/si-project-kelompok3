@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem *)",
+      "Bash(Test-Path *)",
+      "Bash(dir C:\\\\Users\\\\user\\\\Documents\\\\SI PROJECT KEL 3\\\\apps\\\\frontend\\\\src\\\\app\\\\sdm\\\\data-pegawai\\\\ *)",
+      "Bash(npx prisma *)",
+      "Bash(npm run *)",
+      "Bash(echo \"Backend PID: $!\")",
+      "Bash(echo \"Frontend PID: $!\")",
+      "Bash(pkill -f \"nest start\")",
+      "Bash(pkill -f \"node.*dist/main\")",
+      "Bash(taskkill //F //IM node.exe)",
+      "Read(//d//**)",
+      "Bash(dir \"D:\\\\\\\\\")",
+      "Bash(python3 *)",
+      "Bash(npx tsc *)",
+      "Bash(C:\\\\Program Files\\\\PostgreSQL\\\\18\\\\bin\\\\psql.exe *)",
+      "Bash(node -e ' *)",
+      "Bash(curl -s \"http://localhost:3001/cuti/admin/all-pengajuan\")",
+      "Bash(python -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\('cuti:', len\\(d['data']['cuti']\\), 'izin:', len\\(d['data']['izin']\\)\\)\")",
+      "Bash(taskkill *)",
+      "PowerShell(taskkill *)",
+      "PowerShell($env:PGPASSWORD = \"rsgm123\"; & \"C:\\\\Program Files\\\\PostgreSQL\\\\18\\\\bin\\\\psql.exe\" -U postgres -d sim_cuti_rsgm -c \"SELECT username, nama, jabatan FROM `\"Pegawai`\" WHERE jabatan ILIKE '%dokter%' ORDER BY jabatan, nama;\")",
+      "PowerShell($env:PGPASSWORD = \"rsgm123\"; & \"C:\\\\Program Files\\\\PostgreSQL\\\\18\\\\bin\\\\psql.exe\" -U postgres -d sim_cuti_rsgm -f \"C:\\\\Users\\\\user\\\\AppData\\\\Local\\\\Temp\\\\update_username.sql\")",
+      "PowerShell($env:PGPASSWORD = \"rsgm123\"; & \"C:\\\\Program Files\\\\PostgreSQL\\\\18\\\\bin\\\\psql.exe\" -U postgres -d sim_cuti_rsgm -c \"\\\\dt\")",
+      "PowerShell($env:PGPASSWORD = \"rsgm123\"; & \"C:\\\\Program Files\\\\PostgreSQL\\\\18\\\\bin\\\\psql.exe\" -U postgres -d sim_cuti_rsgm -c \"SELECT username, nama, password FROM pegawai WHERE username IN \\('aldiahmadsarif','gumilangramdhany','tarisazakiri'\\) ORDER BY nama;\")",
+      "PowerShell($env:PGPASSWORD = \"rsgm123\"; & \"C:\\\\Program Files\\\\PostgreSQL\\\\18\\\\bin\\\\psql.exe\" -U postgres -d sim_cuti_rsgm -c \"SELECT username, password FROM pegawai WHERE password NOT IN \\('202105693','202206697','202104494'\\) AND password LIKE '$2b$%' LIMIT 3;\")",
+      "PowerShell($env:PGPASSWORD = \"rsgm123\"; & \"C:\\\\Program Files\\\\PostgreSQL\\\\18\\\\bin\\\\psql.exe\" -U postgres -d sim_cuti_rsgm -c \"SELECT id, username, nama, jabatan, unit FROM pegawai WHERE nama ILIKE '%ester%lidya%' OR nama ILIKE '%ester lidya%';\")",
+      "PowerShell($env:PGPASSWORD = \"rsgm123\"; & \"C:\\\\Program Files\\\\PostgreSQL\\\\18\\\\bin\\\\psql.exe\" -U postgres -d sim_cuti_rsgm -c \"DELETE FROM pegawai WHERE id = 85 AND nama ILIKE '%Ester Lidya%' RETURNING id, username, nama, jabatan;\")",
+      "PowerShell(Get-NetTCPConnection *)",
+      "PowerShell(Stop-Process *)",
+      "PowerShell(Get-Process *)"
+    ]
+  }
+}

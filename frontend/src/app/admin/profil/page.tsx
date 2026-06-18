@@ -1,0 +1,1 @@
+"use client"; import AdminProfilPage from "@/app/admin/profil/AdminProfilPage"; export default function Page() { return <AdminProfilPage />; }
