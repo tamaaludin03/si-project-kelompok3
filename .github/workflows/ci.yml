@@ -2,12 +2,12 @@ name: CI Pipeline SIMCI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, develop ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, develop ]
 
 jobs:
-  build-and-test:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,13 +17,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '20'
 
-      - name: Install dependency
+      - name: Install dependencies
         run: npm install
-
-      - name: Generate Prisma Client
-        run: npx prisma generate
 
       - name: Build aplikasi
         run: npm run build
+
+      - name: Run tests
+        run: npm test
