@@ -6,7 +6,7 @@
     },
     "backend": {
       "root": "backend",
-      "framework": null,
+      "framework": "nestjs",
       "buildCommand": "npm run build"
     }
   }
