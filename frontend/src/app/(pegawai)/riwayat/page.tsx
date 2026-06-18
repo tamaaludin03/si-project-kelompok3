@@ -328,7 +328,7 @@ export default function RiwayatPage() {
         const mappedCuti: ItemRiwayat[] = Array.isArray(cutiArr)
           ? cutiArr.map((item: any) => ({
               id: `cuti-${item.id}`, rawId: item.id, jenis: "Cuti" as const,
-              jenisDetail: item.jenis_cuti ? "Cuti " + item.jenis_cuti.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) : "-", alasan: item.alasan || "-",
+              jenisDetail: item.jenis_cuti ? "Cuti " + item.jenis_cuti.replace(/_/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase()) : "-", alasan: item.alasan || "-",
               tanggalMulai: item.tanggal_mulai, tanggalSelesai: item.tanggal_selesai,
               tanggalPengajuan: item.created_at, status: item.status || "pending",
               surat_cuti_diterbitkan: Boolean(item.surat_cuti_diterbitkan),
