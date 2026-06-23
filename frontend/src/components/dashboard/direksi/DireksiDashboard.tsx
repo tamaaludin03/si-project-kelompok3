@@ -379,7 +379,6 @@ export default function DireksiDashboard() {
                   { label: `NIP: ${profile?.nip || "-"}`,      cls: "border-slate-200  bg-slate-50  text-slate-600"       },
                   { label: profile?.jabatan || "Direksi",       cls: "border-violet-100 bg-violet-50 text-violet-700"      },
                   { label: `Unit: ${profile?.unit || "-"}`,     cls: "border-slate-200  bg-slate-50  text-slate-600"       },
-                  { label: profile?.role || "direksi",          cls: "border-sky-100    bg-sky-50    text-sky-700"         },
                 ].map(({ label, cls }) => (
                   <span key={label} className={`rounded-full border px-3.5 py-1 text-xs font-semibold ${cls}`}>{label}</span>
                 ))}
