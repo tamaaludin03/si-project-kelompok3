@@ -61,7 +61,7 @@ export default function AdminSidebar() {
     }
 
     loadCounts();
-    const timer = window.setInterval(loadCounts, 30000);
+    const timer = window.setInterval(loadCounts, 300000);
 
     return () => {
       alive = false;

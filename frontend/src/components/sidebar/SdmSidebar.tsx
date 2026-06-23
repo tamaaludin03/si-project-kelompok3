@@ -25,7 +25,7 @@ const sections: SidebarSection[] = [
       { label: "Pengajuan Masuk", href: "/sdm/pengajuan-masuk", countKey: "pengajuan" },
       { label: "Statistik", href: "/sdm/statistik" },
       { label: "Laporan", href: "/sdm/laporan" },
-      { label: "Notifikasi", href: "/sdm/notifikasi" },
+      { label: "Notifikasi Surat", href: "/sdm/notifikasi" },
     ],
   },
 ];
@@ -63,7 +63,7 @@ export default function SdmSidebar() {
     }
 
     loadCounts();
-    const timer = window.setInterval(loadCounts, 30000);
+    const timer = window.setInterval(loadCounts, 300000);
 
     return () => {
       alive = false;

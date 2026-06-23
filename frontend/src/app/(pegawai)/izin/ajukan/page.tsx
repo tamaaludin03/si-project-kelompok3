@@ -112,7 +112,7 @@ export default function AjukanIzinPage() {
     if (!tanggal)                    errs.tanggal  = "Tanggal izin wajib diisi.";
     if (needJamMulai && !jamMulai)   errs.jamMulai = `${jamLabel} wajib diisi untuk jenis izin ini.`;
     if (!alasan.trim())              errs.alasan   = "Alasan pengajuan wajib diisi.";
-    if (isSick && !lampiran)         errs.lampiran = "Lampiran surat/bukti dokter wajib diupload untuk izin sakit.";
+    // Lampiran untuk izin sakit kini OPSIONAL — tidak ada validasi wajib.
     return errs;
   }
 
@@ -297,12 +297,18 @@ export default function AjukanIzinPage() {
                 <div>
                   <label className="text-xs font-bold uppercase tracking-wide text-slate-500">
                     Lampiran Pendukung
-                    {isSick && <span className="ml-1 text-rose-500">*</span>}
+                    {isSick && <span className="ml-1 text-[10px] font-semibold normal-case text-slate-400">(opsional)</span>}
                   </label>
                   {isSick && (
-                    <p className="mt-0.5 text-[11px] font-semibold text-rose-600">
-                      Wajib diisi — izin tidak masuk karena sakit memerlukan bukti/surat dokter.
-                    </p>
+                    lampiran ? (
+                      <p className="mt-0.5 text-[11px] font-semibold text-emerald-600">
+                        Surat terlampir. Izin ini tidak memotong jatah cuti.
+                      </p>
+                    ) : (
+                      <p className="mt-0.5 text-[11px] font-semibold text-amber-600">
+                        Belum melampirkan surat. Izin ini akan memotong jatah cuti.
+                      </p>
+                    )
                   )}
                 </div>
                 {!lampiran && (

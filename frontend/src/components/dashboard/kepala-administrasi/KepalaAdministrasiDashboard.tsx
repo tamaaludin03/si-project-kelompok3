@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { API_BASE_URL } from "@/lib/api";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -274,7 +275,7 @@ export default function KepalaAdministrasiDashboard() {
 
   useEffect(() => {
     loadData();
-    const timer = window.setInterval(loadData, 30_000);
+    const timer = window.setInterval(loadData, 300_000);
     return () => window.clearInterval(timer);
   }, []);
 
@@ -488,7 +489,11 @@ export default function KepalaAdministrasiDashboard() {
 
               <div className="mt-6 overflow-hidden rounded-2xl border border-slate-100 bg-white">
                 {loading ? (
-                  <div className="p-8 text-center text-sm font-bold text-slate-500">Memuat pengajuan...</div>
+                  <div className="space-y-2 p-4">
+                    {[...Array(4)].map((_, i) => (
+                      <Skeleton key={i} className="h-12" style={{ animationDelay: `${i * 40}ms` }} />
+                    ))}
+                  </div>
                 ) : recentRows.length === 0 ? (
                   <div className="p-8 text-center">
                     <p className="font-black text-slate-900">Tidak ada pengajuan final</p>

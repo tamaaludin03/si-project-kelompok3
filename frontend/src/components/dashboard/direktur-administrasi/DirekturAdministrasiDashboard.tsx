@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { API_BASE_URL } from "@/lib/api";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 function extractItems(payload: any): any[] {
   if (Array.isArray(payload?.data?.items)) return payload.data.items;
@@ -158,7 +159,7 @@ export default function DirekturAdministrasiDashboard() {
           {loading ? (
             <div className="space-y-2">
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="h-16 animate-pulse rounded-2xl bg-slate-100" />
+                <Skeleton key={i} className="h-16" style={{ animationDelay: `${i * 40}ms` }} />
               ))}
             </div>
           ) : total === 0 ? (

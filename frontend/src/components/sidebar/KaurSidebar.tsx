@@ -37,7 +37,7 @@ const sections: SidebarSection[] = [
       },
       { label: "Data Pegawai Unit", href: "/kaur/data-pegawai" },
       { label: "Riwayat Approval", href: "/kaur/riwayat-approval" },
-      { label: "Notifikasi", href: "/kaur/notifikasi", countKey: "totalPending" },
+      { label: "Notifikasi Approval", href: "/kaur/notifikasi", countKey: "totalPending" },
     ],
   },
 ];
@@ -78,7 +78,7 @@ export default function KaurSidebar() {
     }
 
     loadCounts();
-    const timer = window.setInterval(loadCounts, 30000);
+    const timer = window.setInterval(loadCounts, 300000);
 
     return () => {
       alive = false;

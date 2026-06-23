@@ -567,7 +567,7 @@ function DashboardPegawaiView() {
       } catch {}
     }
 
-    const t = setInterval(pollData, 30_000);
+    const t = setInterval(pollData, 300_000);
     return () => clearInterval(t);
   }, [user?.nip]);
 
@@ -805,9 +805,6 @@ function DashboardPegawaiView() {
 
           {/* ══════════════════ HEADER CARD ════════════════════════════ */}
           <div className="rsgm-header relative z-10 rounded-2xl bg-white shadow-[var(--peg-shadow-card)]">
-            {/* Top accent stripe */}
-            <div className="h-[3px] w-full rounded-tl-2xl rounded-tr-2xl bg-gradient-to-r from-peg-brand-hover via-peg-brand to-peg-brand-mid" />
-
             <div className="p-5">
               <div className="flex items-start justify-between gap-4">
 

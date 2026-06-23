@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import { API_BASE_URL } from "@/lib/api";
+import { AuthToast } from "@/components/ui/AuthToast";
 
 function getDashboardUrl(user: { role?: string; internal_role?: string | null }): string {
   const role = String(user.internal_role || user.role || "pegawai").toLowerCase().trim();
@@ -29,7 +30,7 @@ export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [toast, setToast] = useState<{ title: string; subtitle?: string } | null>(null);
   const [loading, setLoading] = useState(false);
   const [sessionCleared, setSessionCleared] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -54,10 +55,20 @@ export default function LoginPage() {
     }
   }, []);
 
+  // Tampilkan toast logout di halaman login (setelah redirect dari proses logout)
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem("logout_toast") === "1") {
+        sessionStorage.removeItem("logout_toast");
+        setToast({ title: "Berhasil logout", subtitle: "Sampai jumpa lagi" });
+      }
+    } catch {}
+  }, []);
+
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
-    setSuccess("");
+    setToast(null);
 
     if (!username.trim() || !password.trim()) {
       setError("Username dan password wajib diisi.");
@@ -110,7 +121,7 @@ export default function LoginPage() {
         localStorage.removeItem("jenis_kelamin");
       }
 
-      setSuccess(`Login berhasil. Selamat datang, ${user.nama || user.username}!`);
+      setToast({ title: "Login berhasil", subtitle: `Selamat datang, ${user.nama || user.username}` });
 
       setTimeout(() => {
         router.replace(getDashboardUrl(user));
@@ -118,7 +129,7 @@ export default function LoginPage() {
     } catch (err: any) {
       console.error(err);
       setError(err.message || "Terjadi kesalahan saat login.");
-      setSuccess("");
+      setToast(null);
     } finally {
       setLoading(false);
     }
@@ -147,16 +158,13 @@ export default function LoginPage() {
         {/* ── Overlay: putih tipis agar foto tetap terlihat ── */}
         <div className="bg-overlay" aria-hidden="true" />
 
-        {/* ── Toast success ── */}
-        {success && (
-          <div className="toast-success" role="status" aria-live="polite">
-            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
-              <circle cx="7.5" cy="7.5" r="6.5" fill="#059669" opacity=".15"/>
-              <path d="M4.5 7.5l2.25 2.25L10.5 5.25" stroke="#059669" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            {success}
-          </div>
-        )}
+        {/* ── Toast sukses (login & logout) ── */}
+        <AuthToast
+          open={!!toast}
+          title={toast?.title ?? ""}
+          subtitle={toast?.subtitle}
+          onClose={() => setToast(null)}
+        />
 
         {/* ── Card form — tengah layar ── */}
         <div className={`login-center${mounted ? " mounted" : ""}`}>

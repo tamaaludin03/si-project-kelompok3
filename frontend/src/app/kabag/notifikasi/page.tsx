@@ -99,7 +99,7 @@ export default function KabagNotifikasiPage() {
 
   useEffect(() => {
     loadData();
-    const t = window.setInterval(loadData, 30_000);
+    const t = window.setInterval(loadData, 300_000);
     return () => window.clearInterval(t);
   }, []);
 

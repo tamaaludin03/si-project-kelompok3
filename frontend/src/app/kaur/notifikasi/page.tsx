@@ -101,7 +101,7 @@ export default function KaurNotifikasiPage() {
 
   useEffect(() => {
     loadData();
-    const t = window.setInterval(loadData, 30_000);
+    const t = window.setInterval(loadData, 300_000);
     return () => window.clearInterval(t);
   }, []);
 

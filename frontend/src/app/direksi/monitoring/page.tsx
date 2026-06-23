@@ -67,7 +67,7 @@ export default function DireksiMonitoringPage() {
 
   useEffect(() => {
     load();
-    const t = window.setInterval(() => { if (document.visibilityState === "visible") load(true); }, 30_000);
+    const t = window.setInterval(() => { if (document.visibilityState === "visible") load(true); }, 300_000);
     return () => window.clearInterval(t);
   }, []);
 

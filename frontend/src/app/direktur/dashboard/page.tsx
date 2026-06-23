@@ -204,7 +204,7 @@ export default function DirekturDashboardPage() {
     loadStats();
     const t = window.setInterval(() => {
       if (document.visibilityState === "visible") { loadData(true); loadStats(); }
-    }, 30_000);
+    }, 300_000);
     return () => window.clearInterval(t);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

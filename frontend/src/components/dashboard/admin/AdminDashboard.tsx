@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { API_BASE_URL } from "@/lib/api";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 type Pegawai = {
   id: number;
@@ -432,7 +433,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     loadData();
-    const interval = setInterval(loadData, 30000);
+    const interval = setInterval(loadData, 300000);
     return () => clearInterval(interval);
   }, []);
 
@@ -458,13 +459,14 @@ export default function AdminDashboard() {
           @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
           .admin-wrap, .admin-wrap * { font-family: 'Plus Jakarta Sans', sans-serif !important; }
         `}</style>
-        <main className="admin-wrap min-h-screen bg-transparent p-3 sm:p-6">
-          <div className="rounded-3xl bg-white p-8 shadow-sm border border-slate-100">
-            <div className="flex items-center gap-3">
-              <div className="h-5 w-5 animate-spin rounded-full border-2 border-violet-200 border-t-violet-600" />
-              <span className="text-sm font-semibold text-slate-500">Memuat dashboard admin…</span>
-            </div>
+        <main className="admin-wrap min-h-screen space-y-4 bg-transparent p-3 sm:p-6">
+          <Skeleton className="h-32" />
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
+            {[...Array(4)].map((_, i) => (
+              <Skeleton key={i} className="h-28" style={{ animationDelay: `${i * 40}ms` }} />
+            ))}
           </div>
+          <Skeleton className="h-72" />
         </main>
       </>
     );

@@ -31,7 +31,7 @@ const sections: SidebarSection[] = [
       { label: "Dokumen Masuk", href: "/kepala-administrasi/dokumen-masuk", countKey: "dokumenMasuk" },
       { label: "Riwayat Approval", href: "/kepala-administrasi/riwayat-approval" },
       { label: "Laporan Cuti & Izin", href: "/kepala-administrasi/laporan-cuti-izin" },
-      { label: "Notifikasi", href: "/kepala-administrasi/notifikasi" },
+      { label: "Notifikasi Approval", href: "/kepala-administrasi/notifikasi" },
     ],
   },
 ];
@@ -66,7 +66,7 @@ export default function KepalaAdministrasiSidebar() {
     }
 
     loadCounts();
-    const timer = window.setInterval(loadCounts, 30000);
+    const timer = window.setInterval(loadCounts, 300000);
 
     return () => {
       alive = false;

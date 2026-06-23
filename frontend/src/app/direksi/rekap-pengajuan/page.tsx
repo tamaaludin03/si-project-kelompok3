@@ -67,7 +67,7 @@ export default function DireksiRekapPengajuanPage() {
 
   useEffect(() => {
     load();
-    const t = window.setInterval(load, 30_000);
+    const t = window.setInterval(load, 300_000);
     return () => window.clearInterval(t);
   }, []);
 

@@ -372,7 +372,6 @@ export function SidebarShell({
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [user, setUser] = useState({ name: "User", jabatan: "" });
   const [showLogout, setShowLogout] = useState(false);
-  const [logoutSuccess, setLogoutSuccess] = useState(false);
 
   useEffect(() => { setUser(readUser()); }, []);
 
@@ -615,24 +614,15 @@ export function SidebarShell({
               onConfirm={() => {
                 clearSession();
                 setShowLogout(false);
-                setLogoutSuccess(true);
-                setTimeout(() => router.push("/login"), 2000);
+                // Toast logout ditampilkan di halaman login (setelah redirect),
+                // bukan sekilas di dashboard.
+                try { sessionStorage.setItem("logout_toast", "1"); } catch {}
+                router.push("/login");
               }}
             />,
             document.body,
           )}
 
-        {/* Logout success toast */}
-        {logoutSuccess &&
-          createPortal(
-            <div className="fixed right-5 top-5 z-[200]">
-              <div className="flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-3.5 shadow-lg">
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 text-white text-xs">✓</span>
-                <p className="text-sm font-semibold text-emerald-800">Berhasil logout</p>
-              </div>
-            </div>,
-            document.body,
-          )}
       </motion.aside>
 
       {/* ── Mobile: dark backdrop (z-[400], below sidebar z-[500]) ─── */}

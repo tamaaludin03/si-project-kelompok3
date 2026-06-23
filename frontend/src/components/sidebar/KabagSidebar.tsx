@@ -37,7 +37,7 @@ const sections: SidebarSection[] = [
       },
       { label: "Riwayat Approval", href: "/kabag/riwayat-approval" },
       { label: "Data Pegawai Unit", href: "/kabag/data-pegawai" },
-      { label: "Notifikasi", href: "/kabag/notifikasi", countKey: "totalPending" },
+      { label: "Notifikasi Approval", href: "/kabag/notifikasi", countKey: "totalPending" },
     ],
   },
 ];
@@ -78,7 +78,7 @@ export default function KabagSidebar() {
     }
 
     loadCounts();
-    const timer = window.setInterval(loadCounts, 30000);
+    const timer = window.setInterval(loadCounts, 300000);
 
     return () => {
       alive = false;

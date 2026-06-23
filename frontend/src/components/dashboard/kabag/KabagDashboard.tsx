@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { API_BASE_URL } from "@/lib/api";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type PegawaiInfo = {
@@ -269,7 +270,7 @@ export default function KabagDashboard() {
 
   useEffect(() => {
     loadData();
-    const timer = window.setInterval(loadData, 30_000);
+    const timer = window.setInterval(loadData, 300_000);
     return () => window.clearInterval(timer);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -521,14 +522,13 @@ export default function KabagDashboard() {
                   </thead>
                   <tbody className="divide-y divide-slate-50 bg-white">
                     {loading ? (
-                      <tr>
-                        <td colSpan={6} className="px-4 py-10 text-center text-sm text-slate-400">
-                          <span className="inline-flex items-center gap-2">
-                            <span className="h-4 w-4 animate-spin rounded-full border-2 border-violet-300 border-t-violet-600" />
-                            Memuat pengajuan...
-                          </span>
-                        </td>
-                      </tr>
+                      [...Array(4)].map((_, i) => (
+                        <tr key={i}>
+                          <td colSpan={6} className="px-4 py-3">
+                            <Skeleton className="h-10" style={{ animationDelay: `${i * 40}ms` }} />
+                          </td>
+                        </tr>
+                      ))
                     ) : recentRows.length === 0 ? (
                       <tr>
                         <td colSpan={6} className="px-4 py-10 text-center text-sm text-slate-400">

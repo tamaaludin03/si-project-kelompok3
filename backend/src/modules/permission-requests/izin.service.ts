@@ -84,6 +84,11 @@ export class IzinService {
         jenis_izin: "tidak_masuk",
         status: "disetujui_final",
         tanggal: { gte: yearStart, lte: yearEnd },
+        // Izin sakit yang melampirkan surat dokter tidak memotong jatah cuti
+        NOT: {
+          alasan: { contains: "sakit", mode: "insensitive" },
+          lampiran: { some: {} },
+        },
       },
     });
 
@@ -124,12 +129,14 @@ export class IzinService {
       throw new BadRequestException("Jam mulai wajib diisi untuk jenis izin ini");
     }
 
-    if (jenisIzin === "tidak_masuk" && dto.alasan.toLowerCase().includes("sakit") && !file) {
-      throw new BadRequestException("Lampiran wajib diupload untuk izin tidak masuk karena sakit");
-    }
+    // Izin sakit = tidak_masuk + alasan mengandung "sakit". Lampiran OPSIONAL:
+    //  - dengan surat → tidak memotong jatah cuti
+    //  - tanpa surat  → memotong jatah cuti seperti biasa
+    const isSakit = jenisIzin === "tidak_masuk" && (dto.alasan || "").toLowerCase().includes("sakit");
+    const izinMemotongJatah = jenisIzin === "tidak_masuk" && !(isSakit && !!file);
 
-    // Izin tidak_masuk memotong cuti tahunan — validasi sisa kuota
-    if (jenisIzin === "tidak_masuk") {
+    // Hanya validasi sisa kuota bila izin ini memang akan memotong jatah
+    if (izinMemotongJatah) {
       const sisa = await this.getSisaCutiTahunan(pegawai.id);
       if (sisa <= 0) {
         throw new BadRequestException(

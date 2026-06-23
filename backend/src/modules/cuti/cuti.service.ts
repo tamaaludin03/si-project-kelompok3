@@ -98,6 +98,11 @@ export class CutiService {
         jenis_izin: "tidak_masuk",
         status: "disetujui_final",
         tanggal: { gte: yearStart, lte: yearEnd },
+        // Izin sakit yang melampirkan surat dokter tidak memotong jatah cuti
+        NOT: {
+          alasan: { contains: "sakit", mode: "insensitive" },
+          lampiran: { some: {} },
+        },
       },
     });
 
@@ -144,7 +149,16 @@ export class CutiService {
         select: { pegawaiId: true, jenis_cuti: true, tanggal_mulai: true, tanggal_selesai: true },
       }),
       this.prisma.izin.findMany({
-        where: { jenis_izin: "tidak_masuk", status: "disetujui_final", tanggal: { gte: yearStart, lte: yearEnd } },
+        where: {
+          jenis_izin: "tidak_masuk",
+          status: "disetujui_final",
+          tanggal: { gte: yearStart, lte: yearEnd },
+          // Izin sakit dengan surat dokter tidak memotong jatah cuti
+          NOT: {
+            alasan: { contains: "sakit", mode: "insensitive" },
+            lampiran: { some: {} },
+          },
+        },
         select: { pegawaiId: true },
       }),
     ]);
