@@ -38,7 +38,7 @@ function extractItems(payload: any): any[] {
 function formatDate(value?: string | null) {
   if (!value) return "-";
   const d = new Date(value);
-  return isNaN(d.getTime()) ? value : d.toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" });
+  return isNaN(d.getTime()) ? value : d.toLocaleDateString("id-ID", { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 
 function formatJenis(value?: string) {

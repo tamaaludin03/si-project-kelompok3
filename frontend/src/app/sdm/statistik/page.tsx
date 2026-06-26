@@ -21,7 +21,7 @@ function formatDate(v?: string | null) {
   if (!v) return "-";
   const d = new Date(v);
   if (Number.isNaN(d.getTime())) return "-";
-  return d.toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" });
+  return d.toLocaleDateString("id-ID", { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 
 const STAT_CONFIG: Record<string, { bg: string; label: string; num: string }> = {

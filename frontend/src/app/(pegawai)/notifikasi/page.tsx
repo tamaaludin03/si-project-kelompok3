@@ -10,7 +10,7 @@ function fmt(v?: string | null) {
   if (!v) return "-";
   const d = new Date(v);
   if (isNaN(d.getTime())) return "-";
-  return d.toLocaleString("id-ID", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
+  return d.toLocaleString("id-ID", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
 }
 
 function timeAgo(v?: string | null) {

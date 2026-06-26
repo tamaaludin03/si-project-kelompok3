@@ -10,7 +10,7 @@ const FINAL_STATUSES = ["disetujui_final", "selesai", "ditolak_kaur", "ditolak_k
 function fmt(v?: string | null) {
   if (!v) return "-";
   const d = new Date(v);
-  return isNaN(d.getTime()) ? v : d.toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" });
+  return isNaN(d.getTime()) ? v : d.toLocaleDateString("id-ID", { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 
 function fmtJenis(v?: string) {

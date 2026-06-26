@@ -76,7 +76,7 @@ function formatDate(value?: string | null) {
   if (!value) return "-";
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
-  return date.toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" });
+  return date.toLocaleDateString("id-ID", { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 
 function getLampiranUrl(file?: LampiranFile | null) {

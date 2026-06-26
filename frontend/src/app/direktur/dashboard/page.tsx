@@ -52,13 +52,13 @@ function extractItems(payload: any): any[] {
 function fmt(v?: string | null) {
   if (!v) return "-";
   const d = new Date(v);
-  return isNaN(d.getTime()) ? "-" : d.toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" });
+  return isNaN(d.getTime()) ? "-" : d.toLocaleDateString("id-ID", { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 
 function fmtDT(v?: string | null) {
   if (!v) return "-";
   const d = new Date(v);
-  return isNaN(d.getTime()) ? "-" : d.toLocaleString("id-ID", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
+  return isNaN(d.getTime()) ? "-" : d.toLocaleString("id-ID", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
 }
 
 function timeAgo(v?: string | null) {

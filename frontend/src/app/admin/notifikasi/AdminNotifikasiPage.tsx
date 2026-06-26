@@ -47,4 +47,4 @@ export default function AdminNotifikasiPage() {
 }
 function Card({title,value}:{title:string;value:number}){return <div className="rounded-2xl border border-violet-100 bg-violet-50 p-4 text-violet-800"><p className="text-xs font-bold uppercase tracking-[0.12em]">{title}</p><p className="mt-2 text-2xl font-black">{value}</p></div>}
 function badge(action:string){const a=action.toLowerCase(); if(a.includes("reset"))return"bg-amber-100 text-amber-700"; if(a.includes("update"))return"bg-sky-100 text-sky-700"; if(a.includes("approve")||a.includes("terbitkan"))return"bg-emerald-100 text-emerald-700"; if(a.includes("reject")||a.includes("tolak"))return"bg-rose-100 text-rose-700"; return"bg-slate-100 text-slate-700"}
-function formatDate(value:string){const d=new Date(value); if(Number.isNaN(d.getTime()))return"-"; return d.toLocaleString("id-ID",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})}
+function formatDate(value:string){const d=new Date(value); if(Number.isNaN(d.getTime()))return"-"; return d.toLocaleString("id-ID",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"})}
