@@ -587,20 +587,32 @@ function FormInput({ label, value, onChange, placeholder, type = "text", disable
   label: string; value: string; onChange: (v: string) => void;
   placeholder?: string; type?: string; disabled?: boolean; required?: boolean; error?: string; maxLength?: number;
 }) {
+  const isDate = type === "date";
+  const dateDisplay = isDate && value ? value.split("-").reverse().join("/") : "";
   return (
     <div className="space-y-1.5">
       <label className="text-xs font-bold uppercase tracking-wide text-slate-500">
         {label}{required && <span className="ml-1 text-rose-500">*</span>}
       </label>
-      <input
-        type={type} value={value} disabled={disabled} maxLength={maxLength}
-        onChange={(e) => onChange(e.target.value)} placeholder={placeholder}
-        className={`w-full rounded-xl border bg-white px-4 py-3 text-sm outline-none transition focus:ring-4 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400 ${
-          error
-            ? "border-rose-400 focus:border-rose-400 focus:ring-rose-100"
-            : "border-slate-200 focus:border-violet-400 focus:ring-violet-100"
-        }`}
-      />
+      <div className="relative">
+        <input
+          type={type} value={value} disabled={disabled} maxLength={maxLength}
+          onChange={(e) => onChange(e.target.value)} placeholder={placeholder}
+          onClick={isDate ? (e) => { try { (e.currentTarget as any).showPicker?.(); } catch {} } : undefined}
+          className={`w-full rounded-xl border bg-white px-4 py-3 text-sm outline-none transition focus:ring-4 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400 ${isDate ? "text-transparent" : ""} ${
+            error
+              ? "border-rose-400 focus:border-rose-400 focus:ring-rose-100"
+              : "border-slate-200 focus:border-violet-400 focus:ring-violet-100"
+          }`}
+        />
+        {isDate && (
+          <span className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-sm">
+            {dateDisplay
+              ? <span className="text-slate-800">{dateDisplay}</span>
+              : <span className="text-slate-400">dd/mm/yyyy</span>}
+          </span>
+        )}
+      </div>
       {error && <p className="text-[11px] font-semibold text-rose-600">{error}</p>}
     </div>
   );
