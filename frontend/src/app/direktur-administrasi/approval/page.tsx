@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { API_BASE_URL } from "@/lib/api";
 import { formatJenis } from "@/lib/labels";
+import Modal from "@/components/ui/Modal";
 
 type JenisPengajuan = "Cuti" | "Izin";
 
@@ -201,8 +202,8 @@ export default function DirekturApprovalPage() {
 
       {/* Modal */}
       {modal && (
-        <div className="fixed inset-0 z-[600] flex items-center justify-center overflow-y-auto bg-slate-900/40 p-4">
-          <div className="w-full max-w-md rounded-3xl bg-white p-8 shadow-2xl">
+        <Modal open onClose={() => { setModal(null); setCatatan(""); setAlasan(""); }} className="max-w-md rounded-3xl">
+          <div className="p-8">
             <h3 className="text-xl font-extrabold text-slate-900 mb-2">
               {modal.action === "approve" ? "Konfirmasi Persetujuan" : "Konfirmasi Penolakan"}
             </h3>
@@ -254,7 +255,7 @@ export default function DirekturApprovalPage() {
               </button>
             </div>
           </div>
-        </div>
+        </Modal>
       )}
     </main>
   );

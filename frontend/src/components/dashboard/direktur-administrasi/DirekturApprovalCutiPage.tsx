@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { API_BASE_URL } from "@/lib/api";
+import Modal from "@/components/ui/Modal";
 
 function extractItems(p: any): any[] {
   if (Array.isArray(p?.data?.items)) return p.data.items;
@@ -185,8 +186,8 @@ export default function DirekturApprovalCutiPage() {
 
       {/* Modal */}
       {modal && (
-        <div className="fixed inset-0 z-[600] flex items-center justify-center overflow-y-auto bg-slate-900/40 p-4">
-          <div className="w-full max-w-md rounded-3xl bg-white p-8 shadow-2xl">
+        <Modal open onClose={() => { setModal(null); setCatatan(""); setAlasan(""); }} className="max-w-md rounded-3xl">
+          <div className="p-8">
             <h3 className="text-lg font-extrabold text-slate-900 mb-2">
               {modal.action === "approve" ? "Konfirmasi Persetujuan" : "Konfirmasi Penolakan"}
             </h3>
@@ -221,7 +222,7 @@ export default function DirekturApprovalCutiPage() {
               </button>
             </div>
           </div>
-        </div>
+        </Modal>
       )}
     </main>
   );

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { API_BASE_URL } from "@/lib/api";
+import Modal from "@/components/ui/Modal";
 
 type IzinItem = {
   id: number;
@@ -297,8 +298,8 @@ export default function KaurApprovalIzinPage() {
 
       {/* Modal */}
       {modal.open && modal.item && (
-        <div className="fixed inset-0 z-[600] flex items-center justify-center overflow-y-auto bg-slate-900/40 p-4">
-          <div className="w-full max-w-lg rounded-3xl border border-slate-100 bg-white p-4 sm:p-7 shadow-2xl">
+        <Modal open onClose={closeModal} className="max-w-lg rounded-3xl">
+          <div className="p-4 sm:p-7">
             <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-violet-500">
               {modal.type === "approve" ? "Konfirmasi Persetujuan" : "Konfirmasi Penolakan"}
             </p>
@@ -340,7 +341,7 @@ export default function KaurApprovalIzinPage() {
               </button>
             </div>
           </div>
-        </div>
+        </Modal>
       )}
     </div>
   );

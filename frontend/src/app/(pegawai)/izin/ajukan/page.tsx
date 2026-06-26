@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
 import { API_BASE_URL } from "@/lib/api";
 import { Skeleton } from "@/components/ui/Skeleton";
+import Modal from "@/components/ui/Modal";
 const MAX_FILE_MB = 5;
 
 type JenisIzin = "terlambat" | "tidak_masuk" | "tidak_apel" | "pulang_awal" | "keluar_jam_kerja";
@@ -35,8 +36,7 @@ function getRoleDashboard(role: string): string {
 /* ── Konfirmasi Modal ────────────────────────────────────────── */
 function ConfirmModal({ onConfirm, onCancel }: { onConfirm: () => void; onCancel: () => void }) {
   return (
-    <div className="fixed inset-0 z-[600] flex items-center justify-center overflow-y-auto bg-slate-900/40 p-4">
-      <div className="w-full max-w-sm overflow-hidden rounded-2xl border border-slate-200/60 bg-white shadow-[0_32px_80px_rgba(0,0,0,0.14)]">
+    <Modal open onClose={onCancel} className="max-w-sm overflow-hidden">
         <div className="p-6">
           <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-violet-500">Konfirmasi</p>
           <h2 className="mt-1.5 text-base font-extrabold text-slate-900">Ajukan Izin?</h2>
@@ -54,8 +54,7 @@ function ConfirmModal({ onConfirm, onCancel }: { onConfirm: () => void; onCancel
             Ya, Ajukan
           </button>
         </div>
-      </div>
-    </div>
+    </Modal>
   );
 }
 

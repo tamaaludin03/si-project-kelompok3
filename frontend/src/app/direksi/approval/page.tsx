@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { API_BASE_URL } from "@/lib/api";
+import Modal from "@/components/ui/Modal";
 
 type Pegawai = { nip?: string; nama?: string; jabatan?: string; unit?: string };
 
@@ -260,9 +261,8 @@ export default function DireksiApprovalPage() {
       </section>
 
       {/* Modal */}
-      {modal.open && (
-        <div className="fixed inset-0 z-[600] flex items-center justify-center overflow-y-auto bg-slate-900/40 p-4">
-          <div className="w-full max-w-md rounded-3xl bg-white p-7 shadow-2xl">
+      <Modal open={modal.open} onClose={closeModal} className="max-w-md rounded-3xl">
+        <div className="p-7">
             <h2 className="text-lg font-extrabold text-slate-900">
               {modal.type === "approve" ? "Setujui Pengajuan" : "Tolak Pengajuan"}
             </h2>
@@ -296,9 +296,8 @@ export default function DireksiApprovalPage() {
                 {submitting ? "Memproses..." : modal.type === "approve" ? "Setujui" : "Tolak"}
               </button>
             </div>
-          </div>
         </div>
-      )}
+      </Modal>
     </main>
   );
 }

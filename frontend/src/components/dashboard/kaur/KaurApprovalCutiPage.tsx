@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Eye } from "lucide-react";
 import { Toast } from "@/components/ui/Toast";
 import { API_BASE_URL } from "@/lib/api";
+import Modal from "@/components/ui/Modal";
 
 type Pegawai = { nip?: string; nama?: string; jabatan?: string; unit?: string; jenis_kelamin?: string };
 
@@ -401,8 +402,7 @@ export default function KaurApprovalCutiPage() {
 
       {/* Detail Modal */}
       {detailItem && (
-        <div className="fixed inset-0 z-[600] flex items-center justify-center overflow-y-auto bg-slate-900/40 p-4">
-          <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl border border-slate-100 bg-white shadow-2xl">
+        <Modal open onClose={closeDetail} className="max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl">
             <div className="sticky top-0 flex items-center justify-between border-b border-slate-100 bg-white px-4 py-4 sm:px-7 sm:py-5 rounded-t-3xl">
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-violet-500">Detail Pengajuan</p>
@@ -522,16 +522,15 @@ export default function KaurApprovalCutiPage() {
                 Setujui
               </button>
             </div>
-          </div>
-        </div>
+        </Modal>
       )}
 
       {toast && <Toast message={toast.msg} type={toast.type} onDismiss={() => setToast(null)} />}
 
       {/* Modal */}
       {modal.open && modal.item && (
-        <div className="fixed inset-0 z-[600] flex items-center justify-center overflow-y-auto bg-slate-900/40 p-4">
-          <div className="w-full max-w-lg rounded-3xl border border-slate-100 bg-white p-4 sm:p-7 shadow-2xl">
+        <Modal open onClose={closeModal} className="max-w-lg rounded-3xl">
+          <div className="p-4 sm:p-7">
             <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-violet-500">
               {modal.type === "approve" ? "Konfirmasi Persetujuan" : "Konfirmasi Penolakan"}
             </p>
@@ -572,7 +571,7 @@ export default function KaurApprovalCutiPage() {
               </button>
             </div>
           </div>
-        </div>
+        </Modal>
       )}
     </div>
   );

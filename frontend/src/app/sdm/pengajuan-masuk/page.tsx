@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import * as XLSX from "xlsx";
 import { Toast } from "@/components/ui/Toast";
 import { API_BASE_URL } from "@/lib/api";
+import Modal from "@/components/ui/Modal";
 
 type LampiranItem = {
   id?: number;
@@ -424,8 +425,7 @@ export default function PengajuanMasukPage() {
 
       {/* ── Modal Terbitkan Surat ── */}
       {terbitkanModal.open && terbitkanModal.item && (
-        <div className="fixed inset-0 z-[600] flex items-center justify-center overflow-y-auto bg-slate-900/40 p-4">
-          <div className="w-full max-w-md rounded-3xl border border-slate-100 bg-white shadow-2xl">
+        <Modal open onClose={closeTerbitkanModal} className="max-w-md rounded-3xl">
             {/* Header */}
             <div className="flex items-center justify-between border-b border-slate-100 px-7 py-5">
               <div>
@@ -499,8 +499,7 @@ export default function PengajuanMasukPage() {
                 </button>
               </div>
             </div>
-          </div>
-        </div>
+        </Modal>
       )}
     </>
   );

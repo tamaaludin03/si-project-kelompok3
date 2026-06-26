@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { API_BASE_URL } from "@/lib/api";
+import Modal from "@/components/ui/Modal";
 
 type PegawaiType = {
   nip?: string;
@@ -384,8 +385,8 @@ export default function KepalaAdministrasiApprovalFinalPage() {
 
       {/* Modal */}
       {modalOpen && selected && (
-        <div className="fixed inset-0 z-[600] flex items-center justify-center overflow-y-auto bg-slate-900/40 p-4">
-          <div className="w-full max-w-lg rounded-3xl bg-white p-4 sm:p-7 shadow-xl">
+        <Modal open onClose={() => { setModalOpen(false); setErrorMsg(""); }} className="max-w-lg rounded-3xl">
+          <div className="p-4 sm:p-7">
             <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-violet-500">Kepala Administrasi</p>
             <h2 className="mt-1 text-xl font-extrabold text-slate-900">
               {mode === "approve" ? "Setujui Final" : "Tolak Pengajuan"}
@@ -411,7 +412,7 @@ export default function KepalaAdministrasiApprovalFinalPage() {
               </button>
             </div>
           </div>
-        </div>
+        </Modal>
       )}
     </main>
   );
