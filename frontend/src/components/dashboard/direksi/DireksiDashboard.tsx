@@ -579,7 +579,7 @@ export default function DireksiDashboard() {
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-violet-500">Monitoring</p>
                 <h2 className="mt-1 text-lg font-extrabold text-slate-900">Daftar Pengajuan</h2>
-                <p className="mt-0.5 text-sm text-slate-400">Seluruh pengajuan yang masuk ke dashboard Direksi.</p>
+                <p className="mt-0.5 text-sm text-slate-400">Seluruh pengajuan yang masuk ke dashboard Direktur Utama.</p>
               </div>
               <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-bold text-slate-500">
                 {allRecent.length} / {summary?.totalPengajuan ?? 0} ditampilkan

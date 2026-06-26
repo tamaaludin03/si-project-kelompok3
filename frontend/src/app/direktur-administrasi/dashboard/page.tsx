@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { API_BASE_URL } from "@/lib/api";
+import { formatJenis } from "@/lib/labels";
 
 function extractItems(payload: any): any[] {
   if (Array.isArray(payload?.data?.items)) return payload.data.items;
@@ -48,7 +49,7 @@ export default function DirekturAdministrasiDashboardPage() {
       className="min-h-screen bg-transparent px-3 py-4 sm:px-6 sm:py-8 text-slate-900"
       style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
     >
-      <div className="mx-auto max-w-6xl space-y-6">
+      <div className="space-y-6">
         <section className="rounded-3xl bg-white border border-slate-100 p-4 sm:p-8 shadow-sm">
           <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-indigo-500">Dashboard</p>
           <h1 className="mt-1.5 text-3xl font-extrabold text-slate-900 tracking-tight">
@@ -99,7 +100,7 @@ export default function DirekturAdministrasiDashboardPage() {
                       {item.is_urgent && <span className="rounded-full bg-red-100 text-red-700 px-3 py-0.5 text-xs font-bold">URGENT</span>}
                     </div>
                     <p className="text-sm font-bold text-slate-800">{item.pegawai?.nama || "-"}</p>
-                    <p className="text-xs text-slate-500">{item.jenis_cuti || item.jenis_izin || "-"} · {item.pegawai?.jabatan || "-"}</p>
+                    <p className="text-xs text-slate-500">{formatJenis(item.jenis_cuti || item.jenis_izin)} · {item.pegawai?.jabatan || "-"}</p>
                   </div>
                   <button
                     onClick={() => router.push("/direktur-administrasi/approval")}

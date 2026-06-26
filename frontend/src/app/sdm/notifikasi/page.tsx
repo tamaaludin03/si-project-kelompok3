@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { API_BASE_URL } from "@/lib/api";
+import { formatJenis } from "@/lib/labels";
 
 const SDM_ACTIONS = ["TERBITKAN_SURAT_CUTI", "DOWNLOAD_PDF_CUTI", "DOWNLOAD_PDF_IZIN"];
 
@@ -159,7 +160,7 @@ export default function SdmNotifikasiPage() {
                 </div>
                 <div className="px-5 pb-5 pt-3 flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-bold text-slate-800">{item.jenis_cuti ?? "-"}</p>
+                    <p className="text-sm font-bold text-slate-800">{formatJenis(item.jenis_cuti)}</p>
                     <p className="text-xs text-slate-400 mt-0.5">{timeAgo(item.created_at)}</p>
                   </div>
                   <a href="/sdm/pengajuan-masuk" className="rounded-xl bg-violet-600 px-4 py-2 text-xs font-bold text-white hover:bg-violet-700">

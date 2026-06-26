@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { API_BASE_URL } from "@/lib/api";
+import { formatJenis } from "@/lib/labels";
 
 const ALL_APPROVAL_ACTIONS = [
   "APPROVE_CUTI_KAUR", "REJECT_CUTI_KAUR",
@@ -101,7 +102,7 @@ export default function DireksiNotifikasiPage() {
   return (
     <main className="min-h-screen bg-transparent px-3 py-4 sm:px-6 sm:py-8 space-y-5" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
       <header className="rounded-3xl border border-slate-100 bg-white p-4 sm:p-7 shadow-sm">
-        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Direksi</p>
+        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Direktur Utama</p>
         <h1 className="mt-1.5 text-2xl sm:text-3xl font-extrabold text-slate-900">Notifikasi</h1>
         <p className="mt-1 text-sm text-slate-400">Pantau seluruh alur approval pengajuan cuti dan izin pegawai RSGM.</p>
         <div className="mt-4 flex gap-3">
@@ -147,7 +148,7 @@ export default function DireksiNotifikasiPage() {
                 </div>
                 <div className="px-5 pb-5 pt-3 flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-bold text-slate-800">{item.jenis_cuti ?? item.jenis_izin ?? "-"}</p>
+                    <p className="text-sm font-bold text-slate-800">{formatJenis(item.jenis_cuti ?? item.jenis_izin)}</p>
                     <p className="text-xs text-slate-400 mt-0.5">{timeAgo(item.created_at)}</p>
                   </div>
                 </div>

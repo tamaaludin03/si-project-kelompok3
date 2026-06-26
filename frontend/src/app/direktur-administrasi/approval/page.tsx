@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { API_BASE_URL } from "@/lib/api";
+import { formatJenis } from "@/lib/labels";
 
 type JenisPengajuan = "Cuti" | "Izin";
 
@@ -168,7 +169,7 @@ export default function DirekturApprovalPage() {
                       <p className="text-lg font-extrabold text-slate-900">{item.pegawai?.nama || "-"}</p>
                       <p className="text-sm text-slate-500 mt-1">{item.pegawai?.nip} · {item.pegawai?.jabatan} · {item.pegawai?.unit}</p>
                       <p className="text-sm font-semibold text-slate-700 mt-2">
-                        {item.jenis_cuti || item.jenis_izin || "-"}
+                        {formatJenis(item.jenis_cuti || item.jenis_izin)}
                         {item.tanggal_mulai && ` · ${formatDate(item.tanggal_mulai)} – ${formatDate(item.tanggal_selesai)}`}
                         {item.tanggal && ` · ${formatDate(item.tanggal)}`}
                       </p>

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { API_BASE_URL } from "@/lib/api";
+import { formatJenis } from "@/lib/labels";
 
 const KABAG_ACTIONS = [
   "APPROVE_CUTI_FINAL", "REJECT_CUTI_KABAG",
@@ -169,7 +170,7 @@ export default function KabagNotifikasiPage() {
                 </div>
                 <div className="px-5 pb-5 pt-3 flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-bold text-slate-800">{item.jenis_cuti ?? item.jenis_izin ?? "-"}</p>
+                    <p className="text-sm font-bold text-slate-800">{formatJenis(item.jenis_cuti ?? item.jenis_izin)}</p>
                     {item.catatan_kaur && <p className="text-xs text-slate-500 mt-0.5">Catatan KAUR: {item.catatan_kaur}</p>}
                     <p className="text-xs text-slate-400 mt-0.5">{timeAgo(item.created_at)}</p>
                   </div>

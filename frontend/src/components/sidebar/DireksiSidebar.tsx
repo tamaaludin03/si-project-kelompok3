@@ -46,7 +46,7 @@ export default function DireksiSidebar() {
 
   return (
     <SidebarShell
-      title="Dashboard Direksi"
+      title="Dashboard Direktur Utama"
       subtitle="Rekap cuti, izin, approval, dan pengajuan per unit."
       menus={menus}
       counts={counts}

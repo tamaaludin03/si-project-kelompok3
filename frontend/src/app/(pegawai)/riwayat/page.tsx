@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { API_BASE_URL } from "@/lib/api";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { formatJenis } from "@/lib/labels";
 
 type ItemRiwayat = {
   id: string;
@@ -337,7 +338,7 @@ export default function RiwayatPage() {
         const mappedIzin: ItemRiwayat[] = Array.isArray(izinArr)
           ? izinArr.map((item: any) => ({
               id: `izin-${item.id}`, rawId: item.id, jenis: "Izin" as const,
-              jenisDetail: item.jenis_izin || "-", alasan: item.alasan || "-",
+              jenisDetail: formatJenis(item.jenis_izin), alasan: item.alasan || "-",
               tanggalMulai: item.tanggal, tanggalSelesai: item.tanggal,
               jamMulai: item.jam_mulai || null, jamSelesai: item.jam_selesai || null,
               tanggalPengajuan: item.created_at, status: item.status || "pending",

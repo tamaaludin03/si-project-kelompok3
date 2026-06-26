@@ -333,7 +333,7 @@ export default function KepalaAdministrasiDashboard() {
       `}</style>
 
       <main className="jakarta min-h-screen bg-transparent px-3 py-4 sm:px-6 sm:py-6 text-slate-900">
-        <section className="mx-auto max-w-7xl space-y-6">
+        <section className="space-y-6">
 
           {/* ── Header ── */}
           <header className="rounded-3xl border border-slate-100 bg-white p-4 sm:p-7 shadow-sm">

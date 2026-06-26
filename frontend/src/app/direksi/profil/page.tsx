@@ -84,9 +84,9 @@ export default function DireksiProfilPage() {
               {(profile.nama || "D").split(" ").map(w => w[0]).slice(0,2).join("").toUpperCase()}
             </div>
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-violet-500">Direksi</p>
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-violet-500">Direktur Utama</p>
               <h1 className="mt-0.5 text-2xl font-extrabold tracking-tight text-slate-900">
-                {profile.nama || "Profil Direksi"}
+                {profile.nama || "Profil Direktur Utama"}
               </h1>
               <p className="mt-0.5 text-sm text-slate-400">{profile.jabatan || "-"} · {profile.unit || "-"}</p>
             </div>

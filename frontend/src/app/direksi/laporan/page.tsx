@@ -148,7 +148,7 @@ export default function DireksiLaporanPage() {
       <section className="rounded-3xl border border-slate-100 bg-white p-4 sm:p-7 shadow-sm">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-violet-500">Direksi</p>
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-violet-500">Direktur Utama</p>
             <h1 className="mt-1.5 text-2xl font-extrabold tracking-tight text-slate-900">Laporan</h1>
             <p className="mt-1 text-sm text-slate-400">Ringkasan statistik dan rekap pengajuan untuk keperluan pelaporan.</p>
             {lastUpdated && <p className="mt-1.5 text-[11px] text-slate-400">Data per: {formatDateTime(lastUpdated)}</p>}

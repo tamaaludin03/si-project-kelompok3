@@ -293,7 +293,7 @@ function CreateUserModal({ onClose, onSuccess }: { onClose: () => void; onSucces
               <option value="pegawai">Pegawai</option>
               <option value="admin">Admin</option>
               <option value="sdm">SDM</option>
-              <option value="direksi">Direksi</option>
+              <option value="direksi">Direktur Utama</option>
             </SelectField>
             <SelectField label="Internal Role" value={form.internal_role} onChange={(v) => set("internal_role", v)}>
               <option value="">— Tidak ada —</option>
@@ -301,7 +301,7 @@ function CreateUserModal({ onClose, onSuccess }: { onClose: () => void; onSucces
               <option value="kabag">KABAG</option>
               <option value="kepala_administrasi">Kepala Administrasi</option>
               <option value="sdm">SDM</option>
-              <option value="direksi">Direksi</option>
+              <option value="direksi">Direktur Utama</option>
               <option value="admin">Admin</option>
             </SelectField>
 

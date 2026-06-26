@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { API_BASE_URL } from "@/lib/api";
+import { formatJenis } from "@/lib/labels";
 
 type PendingItem = {
   id: number;
@@ -417,7 +418,7 @@ export default function DirekturDashboardPage() {
                             <span className="rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-700">⚡ Mendesak</span>
                           )}
                           <p className="truncate text-sm font-bold text-slate-900">
-                            {item.jenis_cuti || item.jenis_izin || "-"}
+                            {formatJenis(item.jenis_cuti || item.jenis_izin)}
                           </p>
                         </div>
                         <p className="text-xs font-semibold text-slate-700">{item.pegawai?.nama || "-"}</p>

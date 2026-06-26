@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { RefreshCw, X } from "lucide-react";
 import { API_BASE_URL } from "@/lib/api";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { formatJenis } from "@/lib/labels";
 
 function fmt(v?: string | null) {
   if (!v) return "-";
@@ -175,7 +176,7 @@ export default function PegawaiNotifikasiPage() {
                   item.status === "selesai" ? "bg-emerald-50/60" : "bg-sky-50/60"
                 }`}>
                   <div>
-                    <p className="font-extrabold text-slate-900">{item.jenis_cuti ?? item.jenis_izin ?? "-"}</p>
+                    <p className="font-extrabold text-slate-900">{formatJenis(item.jenis_cuti ?? item.jenis_izin)}</p>
                     {item.status === "direset_admin" ? (
                       <p className="text-xs text-orange-600 mt-0.5 font-medium">Kuota cuti ini telah direset oleh admin</p>
                     ) : (
@@ -226,7 +227,7 @@ export default function PegawaiNotifikasiPage() {
               <div key={`${item._type}-${item.id}-${idx}`} className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
                 <span className="shrink-0 rounded-full bg-slate-200 px-2.5 py-0.5 text-xs font-bold text-slate-700">{item._type}</span>
                 <p className="min-w-0 flex-1 text-sm font-semibold text-slate-800 truncate">
-                  {item.jenis_cuti ?? item.jenis_izin ?? "-"}
+                  {formatJenis(item.jenis_cuti ?? item.jenis_izin)}
                 </p>
                 <span className={`shrink-0 rounded-full border px-2.5 py-0.5 text-xs font-bold ${statusStyle(item.status)}`}>
                   {statusLabel(item.status)}

@@ -372,7 +372,7 @@ export default function KaurDashboard() {
       `}</style>
 
       <main className="kaur-wrap min-h-screen bg-transparent p-3 sm:p-6 text-slate-900">
-        <div className="mx-auto max-w-7xl space-y-5">
+        <div className="space-y-5">
 
           {/* ════ HEADER CARD ════ */}
           <section className="k-a0 rounded-3xl border border-slate-100 bg-white p-4 sm:p-7 shadow-sm">
