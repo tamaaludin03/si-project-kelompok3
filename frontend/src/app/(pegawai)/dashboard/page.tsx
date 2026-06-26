@@ -700,7 +700,7 @@ function DashboardPegawaiView() {
     <>
       {/* ── Modal Ganti Password ── */}
       {showPwModal && createPortal(
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={(e) => e.target === e.currentTarget && closePwModal()}>
+        <div className="fixed inset-0 z-[600] flex items-start justify-center overflow-y-auto bg-slate-900/40 p-4 pt-16 sm:pt-20" onClick={(e) => e.target === e.currentTarget && closePwModal()}>
           <div className="w-full max-w-sm overflow-hidden rounded-2xl border border-slate-200/60 bg-white shadow-[0_32px_80px_rgba(0,0,0,0.18)]">
             {/* Header */}
             <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
@@ -1050,7 +1050,7 @@ export default function DashboardPage() {
   if (role === null) return (
     <div className="min-h-screen space-y-4 p-3 sm:p-6">
       <Skeleton className="h-52" />
-      <div className="grid grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
         {[...Array(6)].map((_, i) => <Skeleton key={i} className="h-28" />)}
       </div>
     </div>

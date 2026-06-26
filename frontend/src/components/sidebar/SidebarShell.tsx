@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
@@ -10,7 +10,6 @@ import {
   CheckSquare, BarChart2, Settings, Mail, AlertTriangle, ChevronRight,
   LogOut, ClipboardList, Database, Building, Shield,
   Layers, FileCheck, Activity, BookOpen, CreditCard, Stethoscope,
-  Menu, X,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -19,6 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { API_BASE_URL as _API_BASE_URL } from "@/lib/api";
+import { useSidebar } from "@/components/layout/SidebarContext";
 
 // ─── Exports ──────────────────────────────────────────────────────────────────
 export const API_BASE_URL = _API_BASE_URL;
@@ -121,8 +121,8 @@ function resolveIcon(label: string, provided?: React.ReactNode): React.ReactNode
 // ─── Logout modal ─────────────────────────────────────────────────────────────
 function LogoutModal({ onConfirm, onCancel }: { onConfirm: () => void; onCancel: () => void }) {
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-transparent backdrop-blur-[2px]" onClick={onCancel} />
+    <div className="fixed inset-0 z-[600] flex items-start justify-center overflow-y-auto p-4 pt-16 sm:pt-20">
+      <div className="absolute inset-0 bg-slate-900/40" onClick={onCancel} />
       <div className="relative w-full max-w-xs overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-slate-300/40">
         <div className="flex flex-col items-center px-6 pt-6 pb-4 text-center">
           <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-rose-50">
@@ -345,95 +345,26 @@ function CollapsibleNavItem({
 
 // ─── Shell ────────────────────────────────────────────────────────────────────
 export function SidebarShell({
-  title,
-  subtitle,
   menus,
   sections,
   counts,
 }: {
-  title: string;
+  // title/subtitle masih diterima dari wrapper lama, namun brand kini di Navbar
+  title?: string;
   subtitle?: string;
   menus?: SidebarMenuItem[];
   sections?: SidebarSection[];
   counts: CountMap;
 }) {
   const router = useRouter();
-  const pathname = usePathname();
-
-  // Desktop: expanded/collapsed (click-toggle, persisted in localStorage)
-  const [isExpanded, setIsExpanded] = useState(true);
-  // Mobile: open/closed overlay
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
-  // Whether viewport is mobile
-  const [isMobile, setIsMobile] = useState(false);
-  // Portal safety
-  const [mounted, setMounted] = useState(false);
+  const { isMobile, isExpanded, mobileOpen, effectiveExpanded, mounted, closeMobile, onNavClick } =
+    useSidebar();
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [user, setUser] = useState({ name: "User", jabatan: "" });
   const [showLogout, setShowLogout] = useState(false);
 
   useEffect(() => { setUser(readUser()); }, []);
-
-  useEffect(() => {
-    setMounted(true);
-
-    // Restore persisted state
-    const saved = localStorage.getItem("sidebar_expanded");
-    if (saved !== null) setIsExpanded(saved === "true");
-
-    // Track viewport width
-    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
-    checkMobile();
-    window.addEventListener("resize", checkMobile, { passive: true });
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  // Close mobile sidebar on route change
-  useEffect(() => {
-    setIsMobileOpen(false);
-  }, [pathname]);
-
-  // Reset mobile open when switching to desktop
-  useEffect(() => {
-    if (!isMobile) setIsMobileOpen(false);
-  }, [isMobile]);
-
-  // Persist desktop state and update CSS variable for layout spacers
-  useEffect(() => {
-    if (!mounted) return;
-    if (!isMobile) {
-      localStorage.setItem("sidebar_expanded", String(isExpanded));
-      document.documentElement.style.setProperty(
-        "--sidebar-w",
-        isExpanded ? "15rem" : "3.5rem"
-      );
-    } else {
-      // On mobile, spacer is hidden — keep variable at collapsed width
-      document.documentElement.style.setProperty("--sidebar-w", "3.5rem");
-    }
-  }, [isExpanded, isMobile, mounted]);
-
-  // Lock body scroll when mobile overlay is open
-  useEffect(() => {
-    if (!mounted) return;
-    document.body.style.overflow = isMobile && isMobileOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
-  }, [isMobile, isMobileOpen, mounted]);
-
-  // Computed: should the sidebar content (labels, brand text) be shown?
-  const effectiveExpanded = isMobile ? isMobileOpen : isExpanded;
-
-  // Close mobile sidebar immediately when any nav link is clicked
-  const onNavClick = isMobile ? () => setIsMobileOpen(false) : undefined;
-
-  function handleHamburger() {
-    if (isMobile) {
-      setIsMobileOpen((v) => !v);
-    } else {
-      setIsExpanded((v) => !v);
-    }
-  }
 
   const av = initials(user.name) || "?";
 
@@ -444,57 +375,18 @@ export function SidebarShell({
 
   return (
     <>
-      {/* ── Sidebar ───────────────────────────────────────────────────── */}
+      {/* ── Sidebar (di bawah navbar, top-14) ───────────────────────────── */}
       <motion.aside
-        className="fixed left-0 top-0 h-screen flex flex-col overflow-hidden border-r border-slate-200 bg-white shadow-[1px_0_12px_0_rgba(148,163,184,0.12)]"
+        className="fixed left-0 top-14 flex h-[calc(100vh-3.5rem)] flex-col overflow-hidden border-r border-slate-200 bg-white shadow-[1px_0_12px_0_rgba(148,163,184,0.12)]"
         style={{ zIndex: 500 }}
         animate={
           isMobile
-            ? { x: isMobileOpen ? 0 : -280, width: 240 }
+            ? { x: mobileOpen ? 0 : -280, width: 240 }
             : { x: 0, width: isExpanded ? 240 : 56 }
         }
         initial={false}
         transition={{ type: "tween", duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
       >
-        {/* ── Header ──────────────────────────────────────────────────── */}
-        <div className="shrink-0 flex items-center h-[60px] px-3 gap-2 border-b border-slate-100">
-          {/* Hamburger / close button — always visible */}
-          <button
-            type="button"
-            onClick={handleHamburger}
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors"
-            aria-label={effectiveExpanded ? "Tutup menu" : "Buka menu"}
-          >
-            {isMobile && isMobileOpen ? <X size={18} /> : <Menu size={18} />}
-          </button>
-
-          {/* Brand (visible when expanded) */}
-          <AnimatePresence initial={false}>
-            {effectiveExpanded && (
-              <motion.div
-                key="brand"
-                initial={{ opacity: 0, x: -6 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -6 }}
-                transition={{ duration: 0.16, delay: 0.04 }}
-                className="flex items-center gap-2 min-w-0 overflow-hidden"
-              >
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white border border-slate-100 shadow-sm">
-                  <img src="/logo.png" alt="RSGM" className="h-7 w-7 object-contain" />
-                </div>
-                <div className="min-w-0 overflow-hidden">
-                  <p className="text-sm font-black tracking-tight text-slate-900 leading-none whitespace-nowrap">
-                    SIMCI
-                  </p>
-                  <p className="mt-0.5 text-[10px] font-medium text-slate-400 whitespace-nowrap">
-                    RSGM
-                  </p>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
         {/* ── Nav ─────────────────────────────────────────────────────── */}
         <nav className="flex-1 overflow-y-auto overflow-x-hidden py-3 px-2">
           <div className="space-y-4">
@@ -614,40 +506,22 @@ export function SidebarShell({
               onConfirm={() => {
                 clearSession();
                 setShowLogout(false);
-                // Toast logout ditampilkan di halaman login (setelah redirect),
-                // bukan sekilas di dashboard.
                 try { sessionStorage.setItem("logout_toast", "1"); } catch {}
                 router.push("/login");
               }}
             />,
             document.body,
           )}
-
       </motion.aside>
 
-      {/* ── Mobile: dark backdrop (z-[400], below sidebar z-[500]) ─── */}
-      {mounted && isMobile && isMobileOpen &&
+      {/* ── Mobile: dark backdrop (z-[400], di bawah sidebar z-[500]) ─── */}
+      {mounted && isMobile && mobileOpen &&
         createPortal(
           <div
             className="fixed inset-0 bg-black/40"
             style={{ zIndex: 400 }}
-            onClick={() => setIsMobileOpen(false)}
+            onClick={closeMobile}
           />,
-          document.body,
-        )}
-
-      {/* ── Mobile: floating hamburger (z-[600], above sidebar) ─────── */}
-      {mounted && isMobile && !isMobileOpen &&
-        createPortal(
-          <button
-            type="button"
-            onClick={() => setIsMobileOpen(true)}
-            className="fixed top-3 left-3 flex h-10 w-10 items-center justify-center rounded-xl bg-white border border-slate-200 shadow-md text-slate-700 active:scale-95 transition-transform"
-            style={{ zIndex: 600 }}
-            aria-label="Buka menu"
-          >
-            <Menu size={20} />
-          </button>,
           document.body,
         )}
     </>

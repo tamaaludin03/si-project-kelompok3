@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { API_BASE_URL } from "@/lib/api";
 import { Skeleton } from "@/components/ui/Skeleton";
+import Modal from "@/components/ui/Modal";
 
 type Pegawai = {
   id: number;
@@ -244,9 +245,7 @@ function CreateUserModal({ onClose, onSuccess }: { onClose: () => void; onSucces
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-transparent backdrop-blur-sm" onClick={onClose} />
-      <div className="relative z-10 w-full max-w-2xl rounded-3xl border border-slate-100 bg-white shadow-2xl">
+    <Modal open onClose={onClose} className="max-w-2xl rounded-3xl">
 
         {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5">
@@ -331,8 +330,7 @@ function CreateUserModal({ onClose, onSuccess }: { onClose: () => void; onSucces
             {submitting ? "Menyimpan…" : "Buat User"}
           </button>
         </div>
-      </div>
-    </div>
+      </Modal>
   );
 }
 

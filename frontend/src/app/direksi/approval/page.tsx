@@ -261,7 +261,7 @@ export default function DireksiApprovalPage() {
 
       {/* Modal */}
       {modal.open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-transparent px-4">
+        <div className="fixed inset-0 z-[600] flex items-start justify-center overflow-y-auto bg-slate-900/40 p-4 pt-16 sm:pt-20">
           <div className="w-full max-w-md rounded-3xl bg-white p-7 shadow-2xl">
             <h2 className="text-lg font-extrabold text-slate-900">
               {modal.type === "approve" ? "Setujui Pengajuan" : "Tolak Pengajuan"}

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { API_BASE_URL } from "@/lib/api";
+import Modal from "@/components/ui/Modal";
 
 type Pegawai = {
   id: number;
@@ -265,9 +266,12 @@ export default function AdminManajemenUserPage() {
       </section>
 
       {/* Modal Reset Cuti */}
-      {resetModal.open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-transparent p-4 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-3xl border border-slate-100 bg-white p-7 shadow-2xl">
+      <Modal
+        open={resetModal.open}
+        onClose={() => { setResetModal({ open: false, target: "semua", pegawai: null }); setResetMsg(""); }}
+        className="max-w-md"
+      >
+        <div className="p-7">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-100">
               <svg className="h-6 w-6 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3m0 3h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
@@ -318,13 +322,16 @@ export default function AdminManajemenUserPage() {
                 {resetting ? "Mereset..." : "Ya, Reset Sekarang"}
               </button>
             </div>
-          </div>
         </div>
-      )}
+      </Modal>
       {/* Modal Edit Username */}
-      {usernameModal.open && usernameModal.pegawai && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-transparent p-4 backdrop-blur-sm">
-          <div className="w-full max-w-sm rounded-3xl border border-slate-100 bg-white p-7 shadow-2xl">
+      <Modal
+        open={usernameModal.open && !!usernameModal.pegawai}
+        onClose={() => { setUsernameModal({ open: false, pegawai: null }); setUsernameMsg(""); }}
+        className="max-w-sm"
+      >
+        {usernameModal.pegawai && (
+          <div className="p-7">
             <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Admin</p>
             <h3 className="mt-1 text-xl font-extrabold text-slate-900">Edit Username</h3>
 
@@ -385,8 +392,8 @@ export default function AdminManajemenUserPage() {
               </button>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </Modal>
     </main>
   );
 }

@@ -35,7 +35,7 @@ function getRoleDashboard(role: string): string {
 /* ── Konfirmasi Modal ────────────────────────────────────────── */
 function ConfirmModal({ onConfirm, onCancel }: { onConfirm: () => void; onCancel: () => void }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-transparent p-4 backdrop-blur-[2px]">
+    <div className="fixed inset-0 z-[600] flex items-start justify-center overflow-y-auto bg-slate-900/40 p-4 pt-16 sm:pt-20">
       <div className="w-full max-w-sm overflow-hidden rounded-2xl border border-slate-200/60 bg-white shadow-[0_32px_80px_rgba(0,0,0,0.14)]">
         <div className="p-6">
           <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-violet-500">Konfirmasi</p>

@@ -476,7 +476,7 @@ export default function RiwayatPage() {
                       <Skeleton className="h-3 w-32" />
                       <Skeleton className="h-3 w-36" />
                     </div>
-                    <div className="grid grid-cols-4 gap-2">
+                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
                       {[0, 1, 2, 3].map((j) => <Skeleton key={j} className="h-16 rounded-xl" />)}
                     </div>
                   </div>

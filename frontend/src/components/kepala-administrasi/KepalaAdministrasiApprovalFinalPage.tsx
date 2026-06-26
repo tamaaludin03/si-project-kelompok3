@@ -384,7 +384,7 @@ export default function KepalaAdministrasiApprovalFinalPage() {
 
       {/* Modal */}
       {modalOpen && selected && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-transparent p-4">
+        <div className="fixed inset-0 z-[600] flex items-start justify-center overflow-y-auto bg-slate-900/40 p-4 pt-16 sm:pt-20">
           <div className="w-full max-w-lg rounded-3xl bg-white p-4 sm:p-7 shadow-xl">
             <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-violet-500">Kepala Administrasi</p>
             <h2 className="mt-1 text-xl font-extrabold text-slate-900">
