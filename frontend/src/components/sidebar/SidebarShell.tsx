@@ -121,7 +121,7 @@ function resolveIcon(label: string, provided?: React.ReactNode): React.ReactNode
 // ─── Logout modal ─────────────────────────────────────────────────────────────
 function LogoutModal({ onConfirm, onCancel }: { onConfirm: () => void; onCancel: () => void }) {
   return (
-    <div className="fixed inset-0 z-[600] flex items-start justify-center overflow-y-auto p-4 pt-16 sm:pt-20">
+    <div className="fixed inset-0 z-[600] flex items-center justify-center overflow-y-auto p-4">
       <div className="absolute inset-0 bg-slate-900/40" onClick={onCancel} />
       <div className="relative w-full max-w-xs overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-slate-300/40">
         <div className="flex flex-col items-center px-6 pt-6 pb-4 text-center">

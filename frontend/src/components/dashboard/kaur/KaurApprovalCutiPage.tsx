@@ -401,7 +401,7 @@ export default function KaurApprovalCutiPage() {
 
       {/* Detail Modal */}
       {detailItem && (
-        <div className="fixed inset-0 z-[600] flex items-start justify-center overflow-y-auto bg-slate-900/40 p-4 pt-16 sm:pt-20">
+        <div className="fixed inset-0 z-[600] flex items-center justify-center overflow-y-auto bg-slate-900/40 p-4">
           <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl border border-slate-100 bg-white shadow-2xl">
             <div className="sticky top-0 flex items-center justify-between border-b border-slate-100 bg-white px-4 py-4 sm:px-7 sm:py-5 rounded-t-3xl">
               <div>
@@ -530,7 +530,7 @@ export default function KaurApprovalCutiPage() {
 
       {/* Modal */}
       {modal.open && modal.item && (
-        <div className="fixed inset-0 z-[600] flex items-start justify-center overflow-y-auto bg-slate-900/40 p-4 pt-16 sm:pt-20">
+        <div className="fixed inset-0 z-[600] flex items-center justify-center overflow-y-auto bg-slate-900/40 p-4">
           <div className="w-full max-w-lg rounded-3xl border border-slate-100 bg-white p-4 sm:p-7 shadow-2xl">
             <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-violet-500">
               {modal.type === "approve" ? "Konfirmasi Persetujuan" : "Konfirmasi Penolakan"}

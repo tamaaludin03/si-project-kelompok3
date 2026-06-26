@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  Menu, X, Search, Bell, HelpCircle, ChevronDown, User, LogOut,
+  Menu, X, Bell, HelpCircle, ChevronDown, User, LogOut,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -76,7 +76,6 @@ export default function Navbar() {
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState({ name: "User", jabatan: "", role: "" });
   const [hasUnread, setHasUnread] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -140,30 +139,10 @@ export default function Navbar() {
         </span>
       </Link>
 
-      {/* ── Tengah: search (desktop) ───────────────────────────────── */}
-      <div className="relative mx-auto hidden w-full max-w-xl flex-1 items-center md:flex">
-        <Search size={16} className="pointer-events-none absolute left-3 text-slate-400" />
-        <input
-          type="text"
-          placeholder="Cari pengajuan, pegawai..."
-          className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-3 text-sm text-slate-700 outline-none transition-colors placeholder:text-slate-400 focus:border-peg-brand focus:bg-white"
-        />
-      </div>
-
-      {/* Pendorong agar kontrol kanan menempel ke tepi di mobile */}
-      <div className="flex-1 md:hidden" />
+      {/* Pendorong agar kontrol kanan menempel ke kanan */}
+      <div className="flex-1" />
 
       {/* ── Kanan: kontrol ─────────────────────────────────────────── */}
-      {/* Search icon (mobile) */}
-      <button
-        type="button"
-        onClick={() => setSearchOpen((v) => !v)}
-        aria-label="Cari"
-        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 md:hidden"
-      >
-        <Search size={19} />
-      </button>
-
       {/* Notifikasi + badge dot */}
       <Link
         href="/notifikasi"
@@ -231,20 +210,6 @@ export default function Navbar() {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* ── Search bar mobile (expand) ─────────────────────────────── */}
-      {searchOpen && (
-        <div className="absolute inset-x-0 top-full border-b border-slate-200 bg-white p-2.5 md:hidden">
-          <div className="relative flex items-center">
-            <Search size={16} className="pointer-events-none absolute left-3 text-slate-400" />
-            <input
-              autoFocus
-              type="text"
-              placeholder="Cari pengajuan, pegawai..."
-              className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-3 text-sm text-slate-700 outline-none placeholder:text-slate-400 focus:border-peg-brand focus:bg-white"
-            />
-          </div>
-        </div>
-      )}
     </header>
   );
 }

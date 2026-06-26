@@ -424,7 +424,7 @@ export default function PengajuanMasukPage() {
 
       {/* ── Modal Terbitkan Surat ── */}
       {terbitkanModal.open && terbitkanModal.item && (
-        <div className="fixed inset-0 z-[600] flex items-start justify-center overflow-y-auto bg-slate-900/40 p-4 pt-16 sm:pt-20">
+        <div className="fixed inset-0 z-[600] flex items-center justify-center overflow-y-auto bg-slate-900/40 p-4">
           <div className="w-full max-w-md rounded-3xl border border-slate-100 bg-white shadow-2xl">
             {/* Header */}
             <div className="flex items-center justify-between border-b border-slate-100 px-7 py-5">
