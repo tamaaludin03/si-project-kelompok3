@@ -594,25 +594,36 @@ function FormInput({ label, value, onChange, placeholder, type = "text", disable
       <label className="text-xs font-bold uppercase tracking-wide text-slate-500">
         {label}{required && <span className="ml-1 text-rose-500">*</span>}
       </label>
-      <div className="relative">
+      {isDate ? (
+        <div className={`relative w-full rounded-xl border bg-white transition focus-within:ring-4 ${
+          error
+            ? "border-rose-400 focus-within:border-rose-400 focus-within:ring-rose-100"
+            : "border-slate-200 focus-within:border-violet-400 focus-within:ring-violet-100"
+        }`}>
+          <div className="pointer-events-none flex items-center justify-between px-4 py-3 text-sm">
+            <span className={dateDisplay ? "text-slate-800" : "text-slate-400"}>{dateDisplay || "dd/mm/yyyy"}</span>
+            <svg className="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+          </div>
+          <input
+            type="date" value={value} disabled={disabled}
+            onChange={(e) => onChange(e.target.value)}
+            onClick={(e) => { try { (e.currentTarget as any).showPicker?.(); } catch {} }}
+            className="absolute inset-0 h-full w-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
+          />
+        </div>
+      ) : (
         <input
           type={type} value={value} disabled={disabled} maxLength={maxLength}
           onChange={(e) => onChange(e.target.value)} placeholder={placeholder}
-          onClick={isDate ? (e) => { try { (e.currentTarget as any).showPicker?.(); } catch {} } : undefined}
-          className={`w-full rounded-xl border bg-white px-4 py-3 text-sm outline-none transition focus:ring-4 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400 ${isDate ? "text-transparent" : ""} ${
+          className={`w-full rounded-xl border bg-white px-4 py-3 text-sm outline-none transition focus:ring-4 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400 ${
             error
               ? "border-rose-400 focus:border-rose-400 focus:ring-rose-100"
               : "border-slate-200 focus:border-violet-400 focus:ring-violet-100"
           }`}
         />
-        {isDate && (
-          <span className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-sm">
-            {dateDisplay
-              ? <span className="text-slate-800">{dateDisplay}</span>
-              : <span className="text-slate-400">dd/mm/yyyy</span>}
-          </span>
-        )}
-      </div>
+      )}
       {error && <p className="text-[11px] font-semibold text-rose-600">{error}</p>}
     </div>
   );
