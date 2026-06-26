@@ -264,7 +264,7 @@ export default function AjukanCutiPage() {
       setPenyerahanTugasKepada(""); setJabatanPengganti(""); setCatatanPegawai("");
       setLampiran(null); setFileKey((k) => k + 1);
 
-      setTimeout(() => { setShowSuccess(false); router.push("/riwayat"); }, 2500);
+      setTimeout(() => { setShowSuccess(false); router.push("/dashboard/status-pengajuan"); }, 2500);
     } catch (err: any) {
       setFieldErrors({ _global: err.message || "Terjadi kesalahan saat mengajukan cuti." });
     } finally {
