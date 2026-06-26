@@ -846,7 +846,7 @@ Tanggal Approval: ${approvedAt ? new Date(approvedAt).toLocaleString("id-ID") : 
       doc.on("data", (chunk) => chunks.push(chunk));
       doc.on("end", () => resolve(Buffer.concat(chunks)));
 
-      const formatDate = (date?: Date | null) => date ? new Date(date).toLocaleDateString("id-ID") : "-";
+      const formatDate = (date?: Date | null) => date ? new Date(date).toLocaleDateString("id-ID", { day: "2-digit", month: "2-digit", year: "numeric" }) : "-";
       const formatJenisIzin = (jenis?: string | null) => {
         const map: Record<string, string> = {
           terlambat: "Izin Datang Terlambat",
@@ -859,7 +859,7 @@ Tanggal Approval: ${approvedAt ? new Date(approvedAt).toLocaleString("id-ID") : 
       };
 
       const tanggalIzin = formatDate(izin.tanggal);
-      const tanggalCetak = new Date().toLocaleDateString("id-ID");
+      const tanggalCetak = formatDate(new Date());
       const signaturePath = izin.pegawai?.ttd_digital
         ? path.join(process.cwd(), izin.pegawai.ttd_digital.replace("/uploads/", "uploads/"))
         : null;

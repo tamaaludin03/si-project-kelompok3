@@ -1272,7 +1272,7 @@ Tanggal Approval: ${approvedAt ? new Date(approvedAt).toLocaleString("id-ID") : 
       doc.on("data", (chunk) => chunks.push(chunk));
       doc.on("end", () => resolve(Buffer.concat(chunks)));
 
-      const formatDate = (date?: Date | null) => date ? new Date(date).toLocaleDateString("id-ID") : "-";
+      const formatDate = (date?: Date | null) => date ? new Date(date).toLocaleDateString("id-ID", { day: "2-digit", month: "2-digit", year: "numeric" }) : "-";
 
       const totalHari = this.calculateDurationInDays(
         this.startOfDay(new Date(cuti.tanggal_mulai)),
@@ -1285,8 +1285,8 @@ Tanggal Approval: ${approvedAt ? new Date(approvedAt).toLocaleString("id-ID") : 
       const tanggalSelesai = formatDate(cuti.tanggal_selesai);
       const tanggalKembali = formatDate(cuti.tanggal_kembali);
       const tanggalCetak = cuti.tanggal_surat
-        ? new Date(cuti.tanggal_surat).toLocaleDateString("id-ID")
-        : new Date().toLocaleDateString("id-ID");
+        ? formatDate(cuti.tanggal_surat)
+        : formatDate(new Date());
       const nomorSurat = cuti.nomor_surat || `CUTI-${cuti.id}`;
       const signaturePath = cuti.pegawai?.ttd_digital
         ? path.join(process.cwd(), cuti.pegawai.ttd_digital.replace("/uploads/", "uploads/"))
