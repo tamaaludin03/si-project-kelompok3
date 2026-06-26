@@ -377,20 +377,21 @@ export class IzinService {
 
   async findPendingForKabag(nipKabag?: string) {
     let unitFilter: string | undefined;
-    let kabagNip: string | undefined;
+    let kabagId: number | undefined;
     if (nipKabag) {
       const kabag = await this.prisma.pegawai.findFirst({
         where: { OR: [{ nip: nipKabag }, { username: nipKabag }] },
-        select: { unit: true, nip: true },
+        select: { unit: true, id: true },
       });
       unitFilter = kabag?.unit?.trim() || undefined;
-      kabagNip   = kabag?.nip          || undefined;
+      kabagId    = kabag?.id;
     }
 
     const where: any = { status: "disetujui_kaur", jenis_izin: "tidak_masuk" };
     const pegawaiFilter: any = {};
     if (unitFilter) pegawaiFilter.unit = unitFilter;
-    if (kabagNip)   pegawaiFilter.nip  = { not: kabagNip };
+    // Exclude pengajuan KABAG sendiri lewat id (null-safe; nip bisa null utk pegawai kontrak)
+    if (kabagId)    pegawaiFilter.id   = { not: kabagId };
     if (Object.keys(pegawaiFilter).length > 0) where.pegawai = pegawaiFilter;
 
     const izinList = await this.prisma.izin.findMany({
@@ -462,6 +463,55 @@ export class IzinService {
 
     return {
       message: "Monitoring izin SDM berhasil diambil",
+      data: { total: izinList.length, items: izinList },
+    };
+  }
+
+  // ── Riwayat keputusan (KAUR & KABAG) — per unit, status sudah terminal ──────
+  // Termasuk izin auto-selesai (terlambat/tidak_apel: status="selesai",
+  // status_kaur="auto"). Tanpa notifikasi (modul izin memang tidak berkirim notif).
+  private readonly RIWAYAT_EXCLUDE = ["pending", "disetujui_kaur", "pending_direktur", "pending_direksi"];
+
+  async findRiwayatForKaur(nipKaur?: string) {
+    return this.findRiwayatByUnit(nipKaur);
+  }
+
+  async findRiwayatForKabag(nipKabag?: string) {
+    return this.findRiwayatByUnit(nipKabag);
+  }
+
+  private async findRiwayatByUnit(nipViewer?: string) {
+    let unitFilter: string | undefined;
+    if (nipViewer) {
+      const viewer = await this.prisma.pegawai.findFirst({
+        where: { OR: [{ nip: nipViewer }, { username: nipViewer }] },
+        select: { unit: true },
+      });
+      unitFilter = viewer?.unit?.trim() || undefined;
+    }
+    // Tanpa unit → kembalikan kosong (hindari bocor lintas unit)
+    if (!unitFilter) {
+      return { message: "Riwayat izin: unit tidak diketahui", data: { total: 0, items: [] } };
+    }
+
+    const izinList = await this.prisma.izin.findMany({
+      where: {
+        status: { notIn: this.RIWAYAT_EXCLUDE },
+        pegawai: { unit: unitFilter },
+      },
+      orderBy: { created_at: "desc" },
+      select: {
+        id: true, jenis_izin: true, tanggal: true, jam_mulai: true, jam_selesai: true,
+        alasan: true, status: true,
+        status_kaur: true, approved_by_kaur: true, approved_at_kaur: true, catatan_kaur: true,
+        status_kabag: true, approved_by_kabag: true, approved_at_kabag: true, catatan_kabag: true,
+        created_at: true, updated_at: true, lampiran: true,
+        pegawai: { select: { nip: true, nama: true, jabatan: true, unit: true } },
+      },
+    });
+
+    return {
+      message: "Riwayat keputusan izin berhasil diambil",
       data: { total: izinList.length, items: izinList },
     };
   }

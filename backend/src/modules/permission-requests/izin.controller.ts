@@ -74,6 +74,16 @@ export class IzinController {
     return this.izinService.findPendingForKabag(nip);
   }
 
+  @Get("kaur/riwayat")
+  getRiwayatForKaur(@Query("nip") nip?: string) {
+    return this.izinService.findRiwayatForKaur(nip);
+  }
+
+  @Get("kabag/riwayat")
+  getRiwayatForKabag(@Query("nip") nip?: string) {
+    return this.izinService.findRiwayatForKabag(nip);
+  }
+
   @Get("direktur/pending")
   getPendingForDirektur(@Query("nip") nip?: string) {
     return this.izinService.findPendingForDirektur(nip);

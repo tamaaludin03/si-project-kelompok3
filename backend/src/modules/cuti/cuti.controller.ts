@@ -84,6 +84,16 @@ export class CutiController {
     return this.cutiService.findPendingForKabag(nip);
   }
 
+  @Get("kaur/riwayat")
+  getRiwayatForKaur(@Query("nip") nip?: string) {
+    return this.cutiService.findRiwayatForKaur(nip);
+  }
+
+  @Get("kabag/riwayat")
+  getRiwayatForKabag(@Query("nip") nip?: string) {
+    return this.cutiService.findRiwayatForKabag(nip);
+  }
+
   @Get("direktur/pending")
   getPendingForDirektur(@Query("nip") nip?: string) {
     return this.cutiService.findPendingForDirektur(nip);

@@ -33,14 +33,17 @@ function formatDate(value?: string | null) {
 function statusClass(status: string) {
   const v = status.toLowerCase();
   if (v.includes("tolak") || v.includes("reject"))   return "border-rose-200 bg-rose-50 text-rose-700";
-  if (v.includes("approve") || v.includes("setuju")) return "border-emerald-200 bg-emerald-50 text-emerald-700";
+  if (v.includes("otomatis") || v.includes("auto"))  return "border-sky-200 bg-sky-50 text-sky-700";
+  if (v.includes("selesai") || v.includes("final") || v.includes("approve") || v.includes("setuju")) return "border-emerald-200 bg-emerald-50 text-emerald-700";
   return "border-amber-200 bg-amber-50 text-amber-700";
 }
 
 function statusLabel(status: string) {
   const v = status.toLowerCase();
   if (v.includes("tolak") || v.includes("reject"))   return "Ditolak";
-  if (v.includes("approve") || v.includes("setuju")) return "Disetujui";
+  if (v.includes("otomatis") || v.includes("auto"))  return "Selesai Otomatis";
+  if (v.includes("selesai")) return "Selesai";
+  if (v.includes("final") || v.includes("approve") || v.includes("setuju")) return "Disetujui";
   return "Menunggu";
 }
 
@@ -72,9 +75,11 @@ export default function KabagRiwayatApprovalPage() {
 
   async function loadData() {
     setLoading(true);
+    const nip = localStorage.getItem("nip") || localStorage.getItem("username") || (() => { try { const r = localStorage.getItem("simciUser"); const u = r ? JSON.parse(r) : null; return u?.nip || u?.username || null; } catch { return null; } })();
+    const q = nip ? `?nip=${encodeURIComponent(nip)}` : "";
     const [cutiData, izinData] = await Promise.all([
-      safeFetch([`${API_BASE_URL}/cuti/kabag/riwayat`, `${API_BASE_URL}/cuti/kabag/history`, `${API_BASE_URL}/cuti/kabag/pending`]),
-      safeFetch([`${API_BASE_URL}/izin/kabag/riwayat`, `${API_BASE_URL}/izin/kabag/history`, `${API_BASE_URL}/izin/kabag/pending`]),
+      safeFetch([`${API_BASE_URL}/cuti/kabag/riwayat${q}`, `${API_BASE_URL}/cuti/kabag/pending${q}`]),
+      safeFetch([`${API_BASE_URL}/izin/kabag/riwayat${q}`, `${API_BASE_URL}/izin/kabag/pending${q}`]),
     ]);
     setCuti(cutiData); setIzin(izinData); setLoading(false);
   }
@@ -98,7 +103,7 @@ export default function KabagRiwayatApprovalPage() {
       nama: item.pegawai?.nama || "-", nip: item.pegawai?.nip || "-", unit: item.pegawai?.unit || "-",
       jenis: item.jenis_izin || "-",
       periode: `${formatDate(item.tanggal || item.tanggal_mulai)}${item.jam_mulai ? `, ${item.jam_mulai}` : ""}`,
-      status: item.status || "-",
+      status: (item.status === "selesai" && item.status_kaur === "auto") ? "selesai otomatis" : (item.status || "-"),
       catatan: item.catatan_kabag || item.catatan_approval || item.catatan || "Belum ada catatan.",
       createdAt: item.created_at || "",
     }));
