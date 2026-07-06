@@ -20,26 +20,11 @@ type PendingItem = {
   _kategori?: "Cuti" | "Izin";
 };
 
-type RiwayatItem = {
-  id: number;
-  jenis_cuti?: string;
-  jenis_izin?: string;
-  tanggal_mulai?: string;
-  tanggal_selesai?: string;
-  tanggal?: string;
-  status: string;
-  approved_at_direktur?: string | null;
-  pegawai?: { nama?: string; nip?: string; jabatan?: string; unit?: string };
-  _kategori?: "Cuti" | "Izin";
-};
-
 type DirekturStats = {
   totalPegawai: number;
   pendingBulanIni: number;
   disetujuiBulanIni: number;
   ditolakBulanIni: number;
-  riwayatCuti: RiwayatItem[];
-  riwayatIzin: RiwayatItem[];
 };
 
 function extractItems(payload: any): any[] {
@@ -61,16 +46,6 @@ function fmtDT(v?: string | null) {
   return isNaN(d.getTime()) ? "-" : d.toLocaleString("id-ID", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
 }
 
-function timeAgo(v?: string | null) {
-  if (!v) return "";
-  const m = Math.floor((Date.now() - new Date(v).getTime()) / 60000);
-  if (m < 1) return "baru saja";
-  if (m < 60) return `${m} mnt lalu`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `${h} jam lalu`;
-  return `${Math.floor(h / 24)} hari lalu`;
-}
-
 function statusBadge(status: string) {
   if (status === "disetujui_final" || status === "selesai")
     return "border-emerald-200 bg-emerald-50 text-emerald-700";
@@ -82,7 +57,7 @@ function statusBadge(status: string) {
 function statusLabel(status: string) {
   if (status === "disetujui_final" || status === "selesai") return "Disetujui";
   if (status === "ditolak_direktur") return "Ditolak";
-  return status;
+  return "Menunggu Direktur";
 }
 
 function todayText() {
@@ -217,17 +192,8 @@ export default function DirekturDashboardPage() {
       ...cutiPending.map(i => ({ ...i, _kategori: "Cuti" as const })),
       ...izinPending.map(i => ({ ...i, _kategori: "Izin" as const })),
     ];
-    return merged.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).slice(0, 6);
+    return merged.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).slice(0, 5);
   }, [cutiPending, izinPending]);
-
-  const riwayatRows = useMemo<RiwayatItem[]>(() => {
-    if (!stats) return [];
-    const cuti = (stats.riwayatCuti || []).map(i => ({ ...i, _kategori: "Cuti" as const }));
-    const izin = (stats.riwayatIzin || []).map(i => ({ ...i, _kategori: "Izin" as const }));
-    return [...cuti, ...izin]
-      .sort((a, b) => new Date(b.approved_at_direktur || 0).getTime() - new Date(a.approved_at_direktur || 0).getTime())
-      .slice(0, 5);
-  }, [stats]);
 
   const initials = nama.split(" ").map(w => w[0]).slice(0, 2).join("").toUpperCase() || "DI";
 
@@ -372,156 +338,122 @@ export default function DirekturDashboardPage() {
         </section>
 
         {/* ══ GRID UTAMA ══ */}
-        <div className="dir-a2 grid grid-cols-1 gap-5 xl:grid-cols-2">
+        <div className="dir-a2 grid grid-cols-1 gap-5">
 
           {/* Pengajuan Masuk */}
           <section className="rounded-3xl border border-slate-100 bg-white p-4 sm:p-7 shadow-sm">
-            <div className="mb-5 flex items-end justify-between">
+            <div className="mb-5 flex flex-wrap items-start justify-between gap-4">
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-violet-500">Perlu Tindakan</p>
-                <h2 className="mt-1 text-lg font-extrabold text-slate-900">Pengajuan Masuk</h2>
-                <p className="mt-0.5 text-sm text-slate-400">Dari Kepala Bagian, menunggu keputusan Anda.</p>
+                <h2 className="mt-1 text-lg font-extrabold text-slate-900">Pengajuan Menunggu Review</h2>
+                <p className="mt-0.5 text-sm text-slate-400">Pengajuan dari Kepala Bagian, menunggu keputusan Anda.</p>
               </div>
               <button
+                type="button"
                 onClick={() => router.push("/direktur/approval")}
-                className="flex items-center gap-1 rounded-xl border border-violet-200 bg-violet-50 px-3.5 py-1.5 text-xs font-bold text-violet-700 transition hover:bg-violet-100"
+                className="rounded-xl border border-violet-200 bg-violet-50 px-4 py-2.5 text-sm font-semibold text-violet-600 transition hover:bg-violet-100 hover:border-violet-300 active:scale-95"
               >
-                Semua {Ic.chevron}
+                Lihat Semua
               </button>
             </div>
 
-            {loading ? (
-              <div className="space-y-2">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="h-20 animate-pulse rounded-2xl bg-slate-100" />
-                ))}
-              </div>
-            ) : recentPending.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-slate-200 py-10 text-center">
-                <p className="text-sm font-semibold text-slate-500">Tidak ada pengajuan yang menunggu.</p>
-                <p className="mt-1 text-xs text-slate-400">Data akan muncul setelah disetujui oleh Kepala Bagian.</p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {recentPending.map(item => (
-                  <div
-                    key={`${item._kategori}-${item.id}`}
-                    className="rounded-2xl border border-slate-100 bg-slate-50 p-4 transition hover:bg-violet-50/40"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0">
-                        <div className="mb-1 flex items-center gap-1.5">
-                          <span className={`shrink-0 rounded-md px-2 py-0.5 text-[10px] font-bold ${
+            <div className="overflow-x-auto rounded-2xl border border-slate-100">
+              <table className="min-w-full divide-y divide-slate-100 text-sm">
+                <thead className="bg-slate-50">
+                  <tr>
+                    {["Pegawai", "Pengajuan", "Periode", "Catatan Kepala Unit", "Status", "Tindakan"].map((h) => (
+                      <th key={h} className="whitespace-nowrap px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                        {h}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-50 bg-white">
+                  {loading ? (
+                    [...Array(4)].map((_, i) => (
+                      <tr key={i}>
+                        <td colSpan={6} className="px-4 py-3">
+                          <div className="h-10 animate-pulse rounded-xl bg-slate-100" style={{ animationDelay: `${i * 40}ms` }} />
+                        </td>
+                      </tr>
+                    ))
+                  ) : recentPending.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="px-4 py-10 text-center text-sm text-slate-400">
+                        Tidak ada pengajuan yang menunggu review.
+                      </td>
+                    </tr>
+                  ) : (
+                    recentPending.map((item) => (
+                      <tr key={`${item._kategori}-${item.id}`} className="dir-row transition-colors">
+                        {/* Pegawai */}
+                        <td className="px-4 py-3.5">
+                          <p className="font-semibold text-slate-800">{item.pegawai?.nama || "-"}</p>
+                          <p className="mt-0.5 text-xs text-slate-400">{item.pegawai?.nip || "-"}</p>
+                          <p className="text-xs text-slate-400">{item.pegawai?.jabatan || "-"}</p>
+                        </td>
+
+                        {/* Pengajuan */}
+                        <td className="px-4 py-3.5">
+                          <span className={`inline-flex rounded-full px-2.5 py-0.5 text-[11px] font-bold ${
                             item._kategori === "Cuti" ? "bg-violet-100 text-violet-700" : "bg-sky-100 text-sky-700"
-                          }`}>{item._kategori}</span>
-                          {item.is_urgent && (
-                            <span className="rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-700">⚡ Mendesak</span>
-                          )}
-                          <p className="truncate text-sm font-bold text-slate-900">
+                          }`}>
+                            {item._kategori}
+                          </span>
+                          <p className="mt-1 text-xs capitalize text-slate-400">
                             {formatJenis(item.jenis_cuti || item.jenis_izin)}
                           </p>
-                        </div>
-                        <p className="text-xs font-semibold text-slate-700">{item.pegawai?.nama || "-"}</p>
-                        <p className="text-xs text-slate-400">
-                          NIP {item.pegawai?.nip || "-"} · {item.pegawai?.unit || "-"}
-                        </p>
-                        <p className="mt-0.5 text-xs text-slate-400">
+                        </td>
+
+                        {/* Periode */}
+                        <td className="whitespace-nowrap px-4 py-3.5 text-xs text-slate-500">
                           {item._kategori === "Cuti"
                             ? `${fmt(item.tanggal_mulai)}${item.tanggal_selesai ? ` – ${fmt(item.tanggal_selesai)}` : ""}`
                             : fmt(item.tanggal)}
-                        </p>
-                        {item.catatan_kabag && (
-                          <p className="mt-1.5 rounded-lg border border-violet-100 bg-violet-50 px-2.5 py-1 text-[11px] text-violet-700">
-                            Catatan KABAG: {item.catatan_kabag}
-                          </p>
-                        )}
-                      </div>
-                      <div className="flex shrink-0 flex-col items-end gap-1.5">
-                        <button
-                          onClick={() => router.push("/direktur/approval")}
-                          className="rounded-lg bg-violet-700 px-3 py-1.5 text-[11px] font-bold text-white transition hover:bg-violet-800"
-                        >
-                          Review
-                        </button>
-                        <p className="text-[10px] text-slate-400">{timeAgo(item.created_at)}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
+                        </td>
 
-          {/* Riwayat Approval */}
-          <section className="rounded-3xl border border-slate-100 bg-white p-4 sm:p-7 shadow-sm">
-            <div className="mb-5 flex items-end justify-between">
-              <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-violet-500">Riwayat</p>
-                <h2 className="mt-1 text-lg font-extrabold text-slate-900">Keputusan Terakhir</h2>
-                <p className="mt-0.5 text-sm text-slate-400">Pengajuan yang sudah Anda proses.</p>
-              </div>
-              <button
-                onClick={() => router.push("/direktur/riwayat-approval")}
-                className="flex items-center gap-1 rounded-xl border border-violet-200 bg-violet-50 px-3.5 py-1.5 text-xs font-bold text-violet-700 transition hover:bg-violet-100"
-              >
-                Semua {Ic.chevron}
-              </button>
-            </div>
+                        {/* Catatan Kepala Unit */}
+                        <td className="max-w-[160px] px-4 py-3.5">
+                          {item.catatan_kabag ? (
+                            <div className="rounded-lg border border-violet-100 bg-violet-50/60 px-2.5 py-1.5">
+                              <p className="text-[9px] font-black uppercase tracking-[0.14em] text-violet-500">KABAG</p>
+                              <p className="mt-0.5 line-clamp-2 text-[11px] font-medium text-slate-700">
+                                {item.catatan_kabag}
+                              </p>
+                            </div>
+                          ) : (
+                            <span className="text-slate-300">—</span>
+                          )}
+                        </td>
 
-            {statsLoading ? (
-              <div className="space-y-2">
-                {[...Array(5)].map((_, i) => (
-                  <div key={i} className="h-14 animate-pulse rounded-xl bg-slate-100" />
-                ))}
-              </div>
-            ) : riwayatRows.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-slate-200 py-10 text-center">
-                <p className="text-sm font-semibold text-slate-500">Belum ada riwayat keputusan.</p>
-              </div>
-            ) : (
-              <div className="overflow-x-auto rounded-2xl border border-slate-100">
-                <table className="min-w-full divide-y divide-slate-100 text-sm">
-                  <thead className="bg-slate-50">
-                    <tr>
-                      {["Pegawai", "Jenis", "Periode", "Status", "Diproses"].map(h => (
-                        <th key={h} className="whitespace-nowrap px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-slate-400">{h}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-50 bg-white">
-                    {riwayatRows.map(item => (
-                      <tr key={`${item._kategori}-${item.id}`} className="dir-row transition-colors">
-                        <td className="px-4 py-3">
-                          <p className="font-semibold text-slate-800 whitespace-nowrap">{item.pegawai?.nama || "-"}</p>
-                          <p className="text-xs text-slate-400">{item.pegawai?.unit || "-"}</p>
-                        </td>
-                        <td className="px-4 py-3">
-                          <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
-                            item._kategori === "Cuti" ? "bg-violet-100 text-violet-700" : "bg-sky-100 text-sky-700"
-                          }`}>{item._kategori}</span>
-                          <p className="mt-1 text-[11px] capitalize text-slate-500">
-                            {(item.jenis_cuti || item.jenis_izin || "-").replace(/_/g, " ")}
-                          </p>
-                        </td>
-                        <td className="px-4 py-3 text-xs text-slate-500 whitespace-nowrap">
-                          {item._kategori === "Cuti"
-                            ? `${fmt(item.tanggal_mulai)} – ${fmt(item.tanggal_selesai)}`
-                            : fmt(item.tanggal)}
-                        </td>
-                        <td className="px-4 py-3">
-                          <span className={`rounded-full border px-2.5 py-0.5 text-[10px] font-bold ${statusBadge(item.status)}`}>
+                        {/* Status */}
+                        <td className="px-4 py-3.5">
+                          <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-bold ${statusBadge(item.status)}`}>
                             {statusLabel(item.status)}
                           </span>
+                          {item.is_urgent && (
+                            <span className="ml-1.5 inline-flex rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-700">
+                              Mendesak
+                            </span>
+                          )}
                         </td>
-                        <td className="px-4 py-3 text-xs text-slate-400 whitespace-nowrap">
-                          {fmt(item.approved_at_direktur)}
+
+                        {/* Tindakan */}
+                        <td className="px-4 py-3.5">
+                          <button
+                            type="button"
+                            onClick={() => router.push("/direktur/approval")}
+                            className="rounded-lg bg-violet-700 px-3 py-1.5 text-[11px] font-bold text-white transition hover:bg-violet-800"
+                          >
+                            Review
+                          </button>
                         </td>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </section>
         </div>
 

@@ -617,14 +617,10 @@ export class CutiService {
   }
 
   async findPendingForDirektur(nipDirektur?: string) {
-    let unitFilter: string | undefined;
-    if (nipDirektur) {
-      const direktur = await this.prisma.pegawai.findFirst({
-        where: { OR: [{ nip: nipDirektur }, { username: nipDirektur }] },
-        select: { unit: true },
-      });
-      unitFilter = direktur?.unit?.trim().toLowerCase() || undefined;
-    }
+    // Pengajuan cuti KABAG (pending_direktur) ditujukan ke seluruh Direktur,
+    // tidak disaring per unit — konsisten dengan halaman Approval Direktur
+    // yang juga menampilkan seluruh antrian ini tanpa filter unit.
+    void nipDirektur;
 
     const cutiList = await this.prisma.cuti.findMany({
       where: { status: "pending_direktur" },
@@ -651,15 +647,9 @@ export class CutiService {
       },
     });
 
-    // Bandingkan unit secara toleran (trim + case-insensitive) — data unit di
-    // lapangan bisa beda kapitalisasi/spasi walau "sama" secara tampilan.
-    const filtered = unitFilter
-      ? cutiList.filter((item) => item.pegawai?.unit?.trim().toLowerCase() === unitFilter)
-      : cutiList;
-
     return {
       message: "Daftar cuti menunggu persetujuan Direktur Administrasi berhasil diambil",
-      data: { total: filtered.length, items: filtered },
+      data: { total: cutiList.length, items: cutiList },
     };
   }
 

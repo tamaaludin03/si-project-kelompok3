@@ -413,14 +413,10 @@ export class IzinService {
   }
 
   async findPendingForDirektur(nipDirektur?: string) {
-    let unitFilter: string | undefined;
-    if (nipDirektur) {
-      const direktur = await this.prisma.pegawai.findFirst({
-        where: { OR: [{ nip: nipDirektur }, { username: nipDirektur }] },
-        select: { unit: true },
-      });
-      unitFilter = direktur?.unit?.trim().toLowerCase() || undefined;
-    }
+    // Pengajuan izin KABAG (pending_direktur) ditujukan ke seluruh Direktur,
+    // tidak disaring per unit — konsisten dengan halaman Approval Direktur
+    // yang juga menampilkan seluruh antrian ini tanpa filter unit.
+    void nipDirektur;
 
     const izinList = await this.prisma.izin.findMany({
       where: { status: "pending_direktur" },
@@ -434,15 +430,9 @@ export class IzinService {
       },
     });
 
-    // Bandingkan unit secara toleran (trim + case-insensitive) — data unit di
-    // lapangan bisa beda kapitalisasi/spasi walau "sama" secara tampilan.
-    const filtered = unitFilter
-      ? izinList.filter((item) => item.pegawai?.unit?.trim().toLowerCase() === unitFilter)
-      : izinList;
-
     return {
       message: "Daftar izin menunggu persetujuan Direktur Administrasi berhasil diambil",
-      data: { total: filtered.length, items: filtered },
+      data: { total: izinList.length, items: izinList },
     };
   }
 
