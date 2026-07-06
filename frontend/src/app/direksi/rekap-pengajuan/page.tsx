@@ -73,6 +73,13 @@ export default function DireksiRekapPengajuanPage() {
 
   const unitOptions = useMemo(() => ["Semua", ...units.map(u => u.unit)], [units]);
 
+  const counts = useMemo(() => ({
+    menunggu: list.filter(i => { const s = i.status.toLowerCase(); return s === "pending" || s === "pending_direktur"; }).length,
+    proses:   list.filter(i => { const s = i.status.toLowerCase(); return s.includes("kaur") || s.includes("kabag"); }).length,
+    final:    list.filter(i => { const s = i.status.toLowerCase(); return s.includes("final") || s === "selesai"; }).length,
+    ditolak:  list.filter(i => i.status.toLowerCase().includes("tolak")).length,
+  }), [list]);
+
   const filtered = useMemo(() => {
     let r = list;
     if (kategori !== "Semua") r = r.filter(i => i.kategori === kategori);
@@ -120,6 +127,21 @@ export default function DireksiRekapPengajuanPage() {
         </div>
         {error && <div className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-600">{error}</div>}
       </section>
+
+      {/* Stat Cards */}
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        {[
+          { label: "Menunggu",        val: counts.menunggu, border: "border-amber-100",   bg: "bg-amber-50/60",   num: "text-amber-700"   },
+          { label: "Sedang Diproses", val: counts.proses,   border: "border-sky-100",     bg: "bg-sky-50/60",     num: "text-sky-700"     },
+          { label: "Disetujui Final", val: counts.final,    border: "border-emerald-100", bg: "bg-emerald-50/60", num: "text-emerald-700" },
+          { label: "Ditolak",         val: counts.ditolak,  border: "border-rose-100",    bg: "bg-rose-50/60",    num: "text-rose-700"    },
+        ].map(({ label, val, border, bg, num }) => (
+          <div key={label} className={`rounded-3xl border ${border} ${bg} p-5 shadow-sm`}>
+            <p className={`text-[2rem] font-black leading-none tracking-tight ${num}`}>{String(val).padStart(2, "0")}</p>
+            <p className={`mt-2 text-[11.5px] font-semibold ${num} opacity-80`}>{label}</p>
+          </div>
+        ))}
+      </div>
 
       {/* Filter */}
       <section className="rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">

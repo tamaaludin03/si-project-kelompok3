@@ -7,7 +7,7 @@ const menus = [
   { label: "Dashboard", href: "/direksi/dashboard" },
   { label: "Approval Pengajuan", href: "/direksi/approval", countKey: "notifPending" },
   { label: "Rekap Pengajuan", href: "/direksi/rekap-pengajuan", countKey: "pengajuan" },
-  { label: "Monitoring", href: "/direksi/monitoring" },
+  { label: "Riwayat Pengajuan", href: "/direksi/riwayat-pengajuan" },
   { label: "Laporan", href: "/direksi/laporan" },
   { label: "Notifikasi", href: "/direksi/notifikasi" },
   { label: "Profil", href: "/profil" },
