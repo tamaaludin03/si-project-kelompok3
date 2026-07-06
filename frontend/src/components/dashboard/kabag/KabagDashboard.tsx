@@ -232,6 +232,7 @@ export default function KabagDashboard() {
   const [profile, setProfile]         = useState<Profile>({});
   const [cutiPending, setCutiPending] = useState<CutiItem[]>([]);
   const [izinPending, setIzinPending] = useState<IzinItem[]>([]);
+  const [unitPegawaiCount, setUnitPegawaiCount] = useState(0);
   const [loading, setLoading]         = useState(true);
   const [message, setMessage]         = useState("");
 
@@ -239,7 +240,8 @@ export default function KabagDashboard() {
     try {
       setLoading(true);
       setMessage("");
-      setProfile(getProfile());
+      const currentProfile = getProfile();
+      setProfile(currentProfile);
 
       const token = localStorage.getItem("token");
       const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
@@ -247,16 +249,25 @@ export default function KabagDashboard() {
       const nip      = localStorage.getItem("nip") || "";
       const nipQuery = nip ? `?nip=${encodeURIComponent(nip)}` : "";
 
-      const [cutiRes, izinRes] = await Promise.all([
+      const [cutiRes, izinRes, pegawaiRes] = await Promise.all([
         fetch(`${API_BASE_URL}/cuti/kabag/pending${nipQuery}`, { headers, cache: "no-store" }),
         fetch(`${API_BASE_URL}/izin/kabag/pending${nipQuery}`, { headers, cache: "no-store" }),
+        fetch(`${API_BASE_URL}/pegawai/list`,                   { headers, cache: "no-store" }),
       ]);
 
-      const cutiJson = await cutiRes.json().catch(() => null);
-      const izinJson = await izinRes.json().catch(() => null);
+      const cutiJson    = await cutiRes.json().catch(() => null);
+      const izinJson    = await izinRes.json().catch(() => null);
+      const pegawaiJson = await pegawaiRes.json().catch(() => null);
 
       if (cutiRes.ok) setCutiPending((extractItems(cutiJson) as CutiItem[]).filter((i) => i.pegawai?.nip !== nip));
       if (izinRes.ok) setIzinPending((extractItems(izinJson) as IzinItem[]).filter((i) => i.pegawai?.nip !== nip));
+
+      if (pegawaiRes.ok && pegawaiJson) {
+        const allPegawai = (pegawaiJson?.data?.items ?? pegawaiJson?.data ?? []) as { unit?: string }[];
+        const unit = currentProfile.unit || "";
+        const count = unit ? allPegawai.filter((p) => p.unit === unit).length : 0;
+        setUnitPegawaiCount(count);
+      }
 
       if (!cutiRes.ok || !izinRes.ok)
         setMessage("Sebagian data tidak dapat dimuat. Silakan coba muat ulang atau hubungi administrator.");
@@ -452,6 +463,16 @@ export default function KabagDashboard() {
                 }
               />
               <StatCard
+                title="Pegawai di Unit"
+                value={unitPegawaiCount}
+                color="amber"
+                icon={
+                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                }
+              />
+              <StatCard
                 title="Mendesak"
                 value={urgentRows.length}
                 color="rose"
@@ -480,6 +501,7 @@ export default function KabagDashboard() {
             <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
               <ActionCard title="Persetujuan Cuti"  desc="Tinjau dan setujui pengajuan cuti"           href="/kabag/approval-cuti"     color="violet"  />
               <ActionCard title="Persetujuan Izin"  desc="Tinjau dan setujui pengajuan izin"           href="/kabag/approval-izin"     color="emerald" />
+              <ActionCard title="Data Pegawai Unit" desc="Lihat pegawai pada unit kerja"               href="/kabag/data-pegawai"      color="amber"   />
               <ActionCard title="Pengajuan Mendesak" desc="Lihat pengajuan yang memerlukan perhatian"  href="/kabag/pengajuan-urgent"  color="amber"   />
               <ActionCard title="Riwayat Keputusan" desc="Riwayat persetujuan yang pernah diproses"   href="/kabag/riwayat-approval"  color="violet"  />
             </div>
