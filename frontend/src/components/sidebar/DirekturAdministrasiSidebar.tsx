@@ -37,6 +37,7 @@ const sections: SidebarSection[] = [
       },
       { label: "Riwayat Approval", href: "/direktur/riwayat-approval" },
       { label: "Laporan Cuti & Izin", href: "/direktur/laporan-cuti-izin" },
+      { label: "Notifikasi Approval", href: "/direktur/notifikasi", countKey: "approvalPending" },
     ],
   },
 ];

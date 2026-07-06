@@ -185,8 +185,6 @@ export default function DirekturDashboardPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const totalPending = cutiPending.length + izinPending.length;
-
   const recentPending = useMemo<PendingItem[]>(() => {
     const merged = [
       ...cutiPending.map(i => ({ ...i, _kategori: "Cuti" as const })),
@@ -284,26 +282,6 @@ export default function DirekturDashboardPage() {
             <StatCard title={`Ditolak · ${bulanIni}`}  value={stats?.ditolakBulanIni   ?? 0} color="rose"    loading={statsLoading} />
           </div>
         </section>
-
-        {/* ══ URGENT BANNER ══ */}
-        {!loading && totalPending > 0 && (
-          <div className="dir-a1 flex items-center justify-between gap-4 rounded-3xl border border-violet-200 bg-violet-50 px-6 py-4 shadow-sm">
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-violet-100 text-violet-600">
-                {Ic.bell}
-              </div>
-              <p className="text-sm font-bold text-violet-800">
-                Ada <span className="text-violet-600">{totalPending} pengajuan</span> dari Kepala Bagian menunggu persetujuan Anda.
-              </p>
-            </div>
-            <button
-              onClick={() => router.push("/direktur/approval-cuti")}
-              className="flex shrink-0 items-center gap-1.5 rounded-xl bg-violet-700 px-5 py-2 text-sm font-bold text-white transition hover:bg-violet-800 active:scale-95"
-            >
-              Review Sekarang {Ic.chevron}
-            </button>
-          </div>
-        )}
 
         {/* ══ AKSES CEPAT ══ */}
         <section className="dir-a1 rounded-3xl border border-slate-100 bg-white p-4 sm:p-7 shadow-sm">
