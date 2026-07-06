@@ -61,7 +61,7 @@ export default function DirekturAdministrasiSidebar() {
       const izinTotal = getTotal(izinPending);
       if (!alive) return;
 
-      const FINAL = ["disetujui_final", "disetujui_direktur", "selesai", "ditolak_kaur", "ditolak_kabag", "ditolak_direktur", "direset_admin"];
+      const FINAL = ["disetujui_final", "disetujui_direktur", "selesai", "ditolak_kaur", "ditolak_kabag", "ditolak_direktur", "ditolak_direksi", "direset_admin"];
       function getItems(p: any): any[] {
         return Array.isArray(p?.data?.items) ? p.data.items : Array.isArray(p?.data) ? p.data : Array.isArray(p) ? p : [];
       }

@@ -20,7 +20,7 @@ type ItemRiwayat = {
   surat_cuti_diterbitkan?: boolean;
 };
 
-const FINAL_STATUSES_RIWAYAT = ["disetujui_final", "selesai", "ditolak_kaur", "ditolak_kabag", "ditolak_direktur", "disetujui_direktur", "direset_admin"];
+const FINAL_STATUSES_RIWAYAT = ["disetujui_final", "selesai", "ditolak_kaur", "ditolak_kabag", "ditolak_direktur", "ditolak_direksi", "disetujui_direktur", "direset_admin"];
 
 type FilterStatus = "SEMUA" | "DISETUJUI" | "DITOLAK";
 type FilterJenis  = "SEMUA" | "CUTI" | "IZIN";
@@ -55,6 +55,8 @@ const STATUS_LABEL: Record<string, string> = {
   ditolak_direktur:    "Ditolak Direktur",
   pending_direktur:    "Menunggu Direktur",
   disetujui_direktur:  "Disetujui Direktur",
+  pending_direksi:     "Menunggu Direktur Utama",
+  ditolak_direksi:     "Ditolak Direktur Utama",
   direset_admin:       "Direset oleh Admin",
 };
 
@@ -76,7 +78,7 @@ function canDownloadPdf(status: string) {
 }
 
 function isMenunggu(s: string) {
-  return s === "pending" || s === "disetujui_kaur" || s === "pending_direktur";
+  return s === "pending" || s === "disetujui_kaur" || s === "pending_direktur" || s === "pending_direksi";
 }
 function isDiSetujui(s: string) {
   return s === "disetujui_final" || s === "selesai" || s === "disetujui_direktur";
@@ -103,8 +105,17 @@ function getTimelineSteps(item: ItemRiwayat, userRole: string = "", isDokter?: b
         { label: "Selesai Otomatis", done: s === "selesai", rejected: false },
       ];
     }
-    // SDM/Dokter: pulang_awal/keluar → auto selesai, tidak ada step KAUR
-    if (isKaurFinal && (role === "sdm" || isDokter)) {
+    // Direktur: tidak_masuk → langsung ke Direktur Utama (3 step)
+    if (role === "direktur" && !isKaurFinal) {
+      const direksiDone = s === "disetujui_final" || s === "selesai" || s === "ditolak_direksi";
+      return [
+        { label: "Diajukan",       done: true,        rejected: false },
+        { label: "Direktur Utama", done: direksiDone, rejected: s === "ditolak_direksi" },
+        { label: "Selesai",        done: s === "disetujui_final" || s === "selesai", rejected: false },
+      ];
+    }
+    // SDM/Direktur/Dokter: pulang_awal/keluar → auto selesai, tidak ada step KAUR
+    if (isKaurFinal && (role === "sdm" || role === "direktur" || isDokter)) {
       return [
         { label: "Diajukan", done: true,                                             rejected: false },
         { label: "Selesai",  done: s === "disetujui_final" || s === "selesai",       rejected: false },
@@ -131,6 +142,17 @@ function getTimelineSteps(item: ItemRiwayat, userRole: string = "", isDokter?: b
       { label: "KAUR",     done: s.includes("kaur") || s.includes("kabag") || s.includes("final"),  rejected: rejected && s.includes("kaur") },
       { label: "KABAG",    done: s.includes("kabag") || s.includes("final"),                         rejected: rejected && s.includes("kabag") },
       { label: "Selesai",  done: s === "disetujui_final",                                            rejected: false },
+    ];
+  }
+
+  /* ── Cuti Direktur unit: langsung ke Direktur Utama (3 step) ── */
+  const melaluiDireksi = s === "pending_direksi" || s === "ditolak_direksi";
+  if (melaluiDireksi || role === "direktur") {
+    const direksiDone = s === "disetujui_final" || s === "selesai" || s === "ditolak_direksi";
+    return [
+      { label: "Diajukan",       done: true,        rejected: false },
+      { label: "Direktur Utama", done: direksiDone, rejected: s === "ditolak_direksi" },
+      { label: "Surat Terbit",   done: s === "disetujui_final" || s === "selesai", rejected: false },
     ];
   }
 

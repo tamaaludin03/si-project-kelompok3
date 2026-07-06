@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { API_BASE_URL } from "@/lib/api";
 import { Skeleton } from "@/components/ui/Skeleton";
 
-const FINAL_STATUSES = ["disetujui_final", "selesai", "ditolak_kaur", "ditolak_kabag", "ditolak_direktur", "disetujui_direktur", "direset_admin"];
+const FINAL_STATUSES = ["disetujui_final", "selesai", "ditolak_kaur", "ditolak_kabag", "ditolak_direktur", "ditolak_direksi", "disetujui_direktur", "direset_admin"];
 
 function fmt(v?: string | null) {
   if (!v) return "-";
@@ -36,11 +36,20 @@ function getSteps(status: string, userRole: string, isCuti: boolean, jenisIzin?:
       ];
     }
 
-    // pulang_awal / keluar_jam_kerja: kaur/kabag/sdm/dokter → auto selesai (2 langkah)
-    if (jenis !== "tidak_masuk" && (userRole === "kaur" || userRole === "kabag" || userRole === "sdm" || isDokter)) {
+    // pulang_awal / keluar_jam_kerja: kaur/kabag/sdm/direktur/dokter → auto selesai (2 langkah)
+    if (jenis !== "tidak_masuk" && (userRole === "kaur" || userRole === "kabag" || userRole === "sdm" || userRole === "direktur" || isDokter)) {
       return [
         { label: "Diajukan", done: true,    current: false,                rejected: false },
         { label: "Selesai",  done: isDone,  current: !isDone && !rejected, rejected: rejected },
+      ];
+    }
+
+    // tidak_masuk: Direktur → Diajukan → Direktur Utama → Selesai
+    if (jenis === "tidak_masuk" && userRole === "direktur") {
+      return [
+        { label: "Diajukan",       done: true,    current: false,                    rejected: false },
+        { label: "Direktur Utama", done: isDone,  current: s === "pending_direksi", rejected: s === "ditolak_direksi" },
+        { label: "Selesai",        done: isDone,  current: false,                    rejected: false },
       ];
     }
 
@@ -95,6 +104,17 @@ function getSteps(status: string, userRole: string, isCuti: boolean, jenisIzin?:
   }
 
   // ── CUTI ──────────────────────────────────────────────────────
+
+  // Direktur unit: skip KAUR & KABAG → langsung ke Direktur Utama
+  if (userRole === "direktur") {
+    const direksiDone = ["disetujui_final", "selesai", "ditolak_direksi"].includes(s);
+    const suratDone   = s === "disetujui_final" || s === "selesai";
+    return [
+      { label: "Diajukan",       done: true,        current: false,                    rejected: false },
+      { label: "Direktur Utama", done: direksiDone, current: s === "pending_direksi", rejected: s === "ditolak_direksi" },
+      { label: "Surat Terbit",   done: suratDone,   current: false,                    rejected: false },
+    ];
+  }
 
   if (userRole === "kabag") {
     const dirDone = s === "disetujui_direktur" || s === "ditolak_direktur";
