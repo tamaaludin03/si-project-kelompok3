@@ -476,7 +476,7 @@ export default function KabagDashboard() {
                 title="Mendesak"
                 value={urgentRows.length}
                 color="rose"
-                onClick={() => router.push("/kabag/pengajuan-urgent")}
+                onClick={() => router.push("/kabag/approval-cuti")}
                 icon={
                   <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -502,7 +502,6 @@ export default function KabagDashboard() {
               <ActionCard title="Persetujuan Cuti"  desc="Tinjau dan setujui pengajuan cuti"           href="/kabag/approval-cuti"     color="violet"  />
               <ActionCard title="Persetujuan Izin"  desc="Tinjau dan setujui pengajuan izin"           href="/kabag/approval-izin"     color="emerald" />
               <ActionCard title="Data Pegawai Unit" desc="Lihat pegawai pada unit kerja"               href="/kabag/data-pegawai"      color="amber"   />
-              <ActionCard title="Pengajuan Mendesak" desc="Lihat pengajuan yang memerlukan perhatian"  href="/kabag/pengajuan-urgent"  color="amber"   />
               <ActionCard title="Riwayat Keputusan" desc="Riwayat persetujuan yang pernah diproses"   href="/kabag/riwayat-approval"  color="violet"  />
             </div>
           </section>
