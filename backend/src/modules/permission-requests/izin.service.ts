@@ -419,14 +419,11 @@ export class IzinService {
         where: { OR: [{ nip: nipDirektur }, { username: nipDirektur }] },
         select: { unit: true },
       });
-      unitFilter = direktur?.unit?.trim() || undefined;
+      unitFilter = direktur?.unit?.trim().toLowerCase() || undefined;
     }
 
-    const where: any = { status: "pending_direktur" };
-    if (unitFilter) where.pegawai = { unit: unitFilter };
-
     const izinList = await this.prisma.izin.findMany({
-      where,
+      where: { status: "pending_direktur" },
       orderBy: { created_at: "asc" },
       select: {
         id: true, jenis_izin: true, tanggal: true, jam_mulai: true,
@@ -437,9 +434,15 @@ export class IzinService {
       },
     });
 
+    // Bandingkan unit secara toleran (trim + case-insensitive) — data unit di
+    // lapangan bisa beda kapitalisasi/spasi walau "sama" secara tampilan.
+    const filtered = unitFilter
+      ? izinList.filter((item) => item.pegawai?.unit?.trim().toLowerCase() === unitFilter)
+      : izinList;
+
     return {
       message: "Daftar izin menunggu persetujuan Direktur Administrasi berhasil diambil",
-      data: { total: izinList.length, items: izinList },
+      data: { total: filtered.length, items: filtered },
     };
   }
 

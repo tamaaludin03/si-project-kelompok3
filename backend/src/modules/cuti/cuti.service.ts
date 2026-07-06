@@ -623,14 +623,11 @@ export class CutiService {
         where: { OR: [{ nip: nipDirektur }, { username: nipDirektur }] },
         select: { unit: true },
       });
-      unitFilter = direktur?.unit?.trim() || undefined;
+      unitFilter = direktur?.unit?.trim().toLowerCase() || undefined;
     }
 
-    const where: any = { status: "pending_direktur" };
-    if (unitFilter) where.pegawai = { unit: unitFilter };
-
     const cutiList = await this.prisma.cuti.findMany({
-      where,
+      where: { status: "pending_direktur" },
       orderBy: { created_at: "asc" },
       select: {
         id: true,
@@ -654,9 +651,15 @@ export class CutiService {
       },
     });
 
+    // Bandingkan unit secara toleran (trim + case-insensitive) — data unit di
+    // lapangan bisa beda kapitalisasi/spasi walau "sama" secara tampilan.
+    const filtered = unitFilter
+      ? cutiList.filter((item) => item.pegawai?.unit?.trim().toLowerCase() === unitFilter)
+      : cutiList;
+
     return {
       message: "Daftar cuti menunggu persetujuan Direktur Administrasi berhasil diambil",
-      data: { total: cutiList.length, items: cutiList },
+      data: { total: filtered.length, items: filtered },
     };
   }
 
