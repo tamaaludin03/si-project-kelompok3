@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { XCircle } from "lucide-react";
 import { API_BASE_URL } from "@/lib/api";
 import { Skeleton } from "@/components/ui/Skeleton";
 
@@ -235,6 +236,28 @@ export default function KabagDashboard() {
   const [unitPegawaiCount, setUnitPegawaiCount] = useState(0);
   const [loading, setLoading]         = useState(true);
   const [message, setMessage]         = useState("");
+  const [dismissedUrgent, setDismissedUrgent] = useState<Set<string>>(new Set());
+  const [dismissedNotif, setDismissedNotif]   = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    try {
+      setDismissedUrgent(new Set(JSON.parse(localStorage.getItem("dash_dismissed_urgent_kabag") || "[]")));
+      setDismissedNotif(new Set(JSON.parse(localStorage.getItem("dash_dismissed_notif_kabag") || "[]")));
+    } catch {}
+  }, []);
+
+  function dismissUrgent(key: string) {
+    if (!window.confirm("Hapus item ini dari daftar urgent?")) return;
+    const next = new Set([...dismissedUrgent, key]);
+    setDismissedUrgent(next);
+    try { localStorage.setItem("dash_dismissed_urgent_kabag", JSON.stringify([...next])); } catch {}
+  }
+
+  function dismissNotif(key: string) {
+    const next = new Set([...dismissedNotif, key]);
+    setDismissedNotif(next);
+    try { localStorage.setItem("dash_dismissed_notif_kabag", JSON.stringify([...next])); } catch {}
+  }
 
   async function loadData() {
     try {
@@ -656,35 +679,41 @@ export default function KabagDashboard() {
                 </div>
 
                 <div className="mt-4">
-                  {urgentRows.length === 0 ? (
+                  {urgentRows.filter(i => !dismissedUrgent.has(`${i.kategori}-${i.id}`)).length === 0 ? (
                     <div className="rounded-2xl border border-dashed border-slate-200 p-8 text-center">
                       <p className="text-sm font-semibold text-slate-500">
                         Tidak ada pengajuan urgent
                       </p>
                       <p className="mt-1 text-xs text-slate-400">
-                        
+
                       </p>
                     </div>
                   ) : (
                     <div className="space-y-2.5">
-                      {urgentRows.slice(0, 4).map((item) => (
-                        <button
-                          key={`urgent-${item.kategori}-${item.id}`}
-                          type="button"
-                          onClick={() =>
-                            router.push(
-                              item.kategori === "Cuti"
-                                ? "/kabag/approval-cuti"
-                                : "/kabag/approval-izin"
-                            )
-                          }
-                          className="w-full rounded-xl border border-rose-100 bg-rose-50/60 p-4 text-left transition-colors hover:bg-rose-50 hover:shadow-sm active:scale-[0.98]"
-                        >
-                          <p className="font-semibold text-slate-800">{item.nama}</p>
-                          <p className="mt-0.5 text-xs text-slate-500">
-                            {item.kategori} • {item.jenis}
-                          </p>
-                        </button>
+                      {urgentRows.filter(i => !dismissedUrgent.has(`${i.kategori}-${i.id}`)).slice(0, 4).map((item) => (
+                        <div key={`urgent-${item.kategori}-${item.id}`}
+                          className="flex items-center gap-2 rounded-xl border border-rose-100 bg-rose-50/60 p-4 transition-colors hover:bg-rose-50">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              router.push(
+                                item.kategori === "Cuti"
+                                  ? "/kabag/approval-cuti"
+                                  : "/kabag/approval-izin"
+                              )
+                            }
+                            className="min-w-0 flex-1 text-left"
+                          >
+                            <p className="font-semibold text-slate-800">{item.nama}</p>
+                            <p className="mt-0.5 text-xs text-slate-500">
+                              {item.kategori} • {item.jenis}
+                            </p>
+                          </button>
+                          <button type="button" onClick={() => dismissUrgent(`${item.kategori}-${item.id}`)}
+                            className="shrink-0 text-rose-400 transition hover:text-rose-600">
+                            <XCircle size={16} />
+                          </button>
+                        </div>
                       ))}
                     </div>
                   )}
@@ -704,46 +733,52 @@ export default function KabagDashboard() {
                 </div>
 
                 <div className="mt-4 space-y-2.5">
-                  {notifRows.length === 0 ? (
+                  {notifRows.filter(i => !dismissedNotif.has(`${i.kategori}-${i.id}`)).length === 0 ? (
                     <div className="rounded-2xl border border-dashed border-slate-200 p-8 text-center">
                       <p className="text-sm font-semibold text-slate-500">
                         Tidak ada notifikasi baru
                       </p>
                       <p className="mt-1 text-xs text-slate-400">
-                        
+
                       </p>
                     </div>
                   ) : (
-                    notifRows.map((item) => (
-                      <button
-                        key={`notif-${item.kategori}-${item.id}`}
-                        type="button"
-                        onClick={() =>
-                          router.push(
-                            item.kategori === "Cuti"
-                              ? "/kabag/approval-cuti"
-                              : "/kabag/approval-izin"
-                          )
-                        }
-                        className="w-full rounded-xl border border-violet-100 bg-violet-50/60 p-4 text-left transition-colors hover:bg-violet-50 hover:shadow-sm active:scale-[0.98]"
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <div>
-                            <p className="text-sm font-semibold text-slate-800">
-                              Review {item.kategori.toLowerCase()} masuk
-                            </p>
-                            <p className="mt-0.5 text-xs text-slate-500">{item.nama}</p>
-                            <p className="mt-0.5 text-xs text-slate-400">
-                              {item.jenis} • {item.periode}
-                            </p>
+                    notifRows.filter(i => !dismissedNotif.has(`${i.kategori}-${i.id}`)).map((item) => (
+                      <div key={`notif-${item.kategori}-${item.id}`}
+                        className="flex items-start gap-2 rounded-xl border border-violet-100 bg-violet-50/60 p-4 transition-colors hover:bg-violet-50">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            router.push(
+                              item.kategori === "Cuti"
+                                ? "/kabag/approval-cuti"
+                                : "/kabag/approval-izin"
+                            )
+                          }
+                          className="min-w-0 flex-1 text-left"
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <div>
+                              <p className="text-sm font-semibold text-slate-800">
+                                Review {item.kategori.toLowerCase()} masuk
+                              </p>
+                              <p className="mt-0.5 text-xs text-slate-500">{item.nama}</p>
+                              <p className="mt-0.5 text-xs text-slate-400">
+                                {item.jenis} • {item.periode}
+                              </p>
+                            </div>
+                            {item.isUrgent && (
+                              <span className="shrink-0 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-[10px] font-bold text-amber-700">
+                                Mendesak
+                              </span>
+                            )}
                           </div>
-                          {item.isUrgent && (
-                            <span className="shrink-0 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-[10px] font-bold text-amber-700">
-                              Mendesak
-                            </span>
-                          )}
-                        </div>
-                      </button>
+                        </button>
+                        <button type="button" onClick={() => dismissNotif(`${item.kategori}-${item.id}`)}
+                          className="mt-0.5 shrink-0 text-slate-400 transition hover:text-slate-600">
+                          <XCircle size={14} />
+                        </button>
+                      </div>
                     ))
                   )}
                 </div>
