@@ -79,8 +79,8 @@ export default function DireksiNotifikasiPage() {
       const token = localStorage.getItem("token");
       const h: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
       const [cr, ir, lr] = await Promise.all([
-        fetch(`${API_BASE_URL}/cuti/direktur/pending`, { headers: h, cache: "no-store" }),
-        fetch(`${API_BASE_URL}/izin/direktur/pending`, { headers: h, cache: "no-store" }),
+        fetch(`${API_BASE_URL}/cuti/direksi/pending`, { headers: h, cache: "no-store" }),
+        fetch(`${API_BASE_URL}/izin/direksi/pending`, { headers: h, cache: "no-store" }),
         fetch(`${API_BASE_URL}/audit-log`, { headers: h, cache: "no-store" }),
       ]);
       setCutiPending(cr.ok ? ((await cr.json())?.data?.items ?? []) : []);
