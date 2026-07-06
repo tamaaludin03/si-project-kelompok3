@@ -311,7 +311,7 @@ function NotifPanel({ notifItems, onClose, onDismiss, dismissedIds, isDokter }: 
   notifItems: ActiveItem[]; onClose: () => void;
   onDismiss: (id: string) => void; dismissedIds: Set<string>; isDokter?: boolean;
 }) {
-  const visibleItems = notifItems.filter(i => !dismissedIds.has(i.id));
+  const visibleItems = notifItems.filter(i => !dismissedIds.has(`${i.id}:${i.status}`));
   const visiblePendingCount = visibleItems.filter(i => i.category === "pending").length;
   const title = getNotifTitle(visibleItems.length > 0 ? visibleItems : notifItems);
   const titleColor =
@@ -377,7 +377,7 @@ function NotifPanel({ notifItems, onClose, onDismiss, dismissedIds, isDokter }: 
                   </div>
                   <button
                     type="button"
-                    onClick={() => onDismiss(item.id)}
+                    onClick={() => onDismiss(`${item.id}:${item.status}`)}
                     className="ml-1 flex h-6 w-6 shrink-0 self-center items-center justify-center rounded-md border border-slate-200 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
                     title="Tutup notifikasi ini"
                   >
@@ -415,6 +415,20 @@ function DashboardPegawaiView() {
   const [notifOpen, setNotifOpen] = useState(false);
   const [dismissedIds, setDismissedIds] = useState<Set<string>>(new Set());
   const seenStatusesRef = useRef<Map<string, string>>(new Map());
+
+  useEffect(() => {
+    try {
+      setDismissedIds(new Set(JSON.parse(localStorage.getItem("dash_dismissed_notif_pegawai") || "[]")));
+    } catch {}
+  }, []);
+
+  function dismissNotifItem(key: string) {
+    setDismissedIds(prev => {
+      const next = new Set([...prev, key]);
+      try { localStorage.setItem("dash_dismissed_notif_pegawai", JSON.stringify([...next])); } catch {}
+      return next;
+    });
+  }
 
   /* ── Ganti Password ── */
   const [showPwModal, setShowPwModal]   = useState(false);
@@ -876,8 +890,8 @@ function DashboardPegawaiView() {
                 {/* ── Right: bell ── */}
                 {(() => {
                   const isAdmin = userRole === "admin" || userRole === "it";
-                  const visiblePending = pendingItems.filter(i => !dismissedIds.has(i.id));
-                  const visibleNotif   = notifItems.filter(i => !dismissedIds.has(i.id));
+                  const visiblePending = pendingItems.filter(i => !dismissedIds.has(`${i.id}:${i.status}`));
+                  const visibleNotif   = notifItems.filter(i => !dismissedIds.has(`${i.id}:${i.status}`));
                   const bellRed = isAdmin || visiblePending.length > 0;
                   const badgeVal = visiblePending.length > 0
                     ? visiblePending.length
@@ -907,7 +921,7 @@ function DashboardPegawaiView() {
                           isDokter={isDokter}
                           onClose={() => setNotifOpen(false)}
                           dismissedIds={dismissedIds}
-                          onDismiss={(id) => setDismissedIds(prev => new Set([...prev, id]))}
+                          onDismiss={dismissNotifItem}
                         />
                       )}
                     </div>
