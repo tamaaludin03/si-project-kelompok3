@@ -102,7 +102,9 @@ export class IzinService {
     if (!pegawai) throw new NotFoundException("Data pegawai tidak ditemukan");
 
     const pegawaiRole = String(pegawai.role || "").toLowerCase().trim();
-    const IZIN_ALLOWED_ROLES = ["pegawai", "kaur", "kabag", "sdm", "admin", "it"];
+    // Semua role boleh mengajukan kecuali direksi (Direktur Utama) — tidak ada
+    // jenjang approval di atasnya.
+    const IZIN_ALLOWED_ROLES = ["pegawai", "kaur", "kabag", "sdm", "admin", "it", "direktur"];
     if (!IZIN_ALLOWED_ROLES.includes(pegawaiRole)) {
       throw new ForbiddenException("Pengajuan izin hanya dapat dilakukan oleh pegawai");
     }

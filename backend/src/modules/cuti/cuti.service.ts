@@ -229,7 +229,9 @@ export class CutiService {
 
     if (!pegawai) throw new NotFoundException("Data pegawai tidak ditemukan");
 
-    const CUTI_ALLOWED_ROLES = ["pegawai", "kaur", "kabag", "sdm", "admin", "it"];
+    // Semua role boleh mengajukan kecuali direksi (Direktur Utama) — tidak ada
+    // jenjang approval di atasnya.
+    const CUTI_ALLOWED_ROLES = ["pegawai", "kaur", "kabag", "sdm", "admin", "it", "direktur"];
     const pegawaiRole = String(pegawai.role || "").toLowerCase().trim();
     if (!CUTI_ALLOWED_ROLES.includes(pegawaiRole)) {
       throw new ForbiddenException("Anda tidak memiliki akses untuk mengajukan cuti");
