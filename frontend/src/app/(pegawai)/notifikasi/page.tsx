@@ -130,7 +130,8 @@ export default function PegawaiNotifikasiPage() {
   const pending = allItems.filter(i => i.status === "pending");
 
   return (
-    <main className="min-h-screen bg-transparent px-3 py-4 sm:px-6 sm:py-8 space-y-5" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+    <main className="min-h-screen bg-transparent px-3 py-4 sm:px-6 sm:py-8" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+      <div className="mx-auto max-w-4xl space-y-5">
       <header className="rounded-3xl border border-slate-100 bg-white p-4 sm:p-7 shadow-sm">
         <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-violet-500">Pegawai</p>
         <h1 className="mt-1.5 text-3xl font-extrabold text-slate-900">Notifikasi Saya</h1>
@@ -170,12 +171,12 @@ export default function PegawaiNotifikasiPage() {
                   item.status === "selesai" ? "border-emerald-200" : "border-slate-100"
                 }`}
               >
-                <div className={`flex items-center justify-between gap-4 rounded-t-3xl p-5 ${
+                <div className={`flex flex-wrap items-center justify-between gap-3 rounded-t-3xl p-4 sm:p-5 ${
                   item.status === "direset_admin" ? "bg-orange-50/60" :
                   item.status.includes("ditolak") ? "bg-rose-50/60" :
                   item.status === "selesai" ? "bg-emerald-50/60" : "bg-sky-50/60"
                 }`}>
-                  <div>
+                  <div className="min-w-0">
                     <p className="font-extrabold text-slate-900">{formatJenis(item.jenis_cuti ?? item.jenis_izin)}</p>
                     {item.status === "direset_admin" ? (
                       <p className="text-xs text-orange-600 mt-0.5 font-medium">Kuota cuti ini telah direset oleh admin</p>
@@ -238,6 +239,7 @@ export default function PegawaiNotifikasiPage() {
           </div>
         )}
       </section>
+      </div>
     </main>
   );
 }
