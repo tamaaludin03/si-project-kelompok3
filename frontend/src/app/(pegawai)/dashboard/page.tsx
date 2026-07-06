@@ -321,7 +321,7 @@ function NotifPanel({ notifItems, onClose, onDismiss, dismissedIds, isDokter }: 
     "text-slate-800";
 
   return (
-    <div className="rsgm-dropdown absolute right-0 top-full z-[9999] mt-2 w-[420px] rounded-2xl border-2 border-slate-300 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.12)]">
+    <div className="rsgm-dropdown absolute right-0 top-full z-[9999] mt-2 w-[min(420px,calc(100vw-4rem))] rounded-2xl border-2 border-slate-300 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.12)]">
       <div className="flex items-center justify-between border-b-2 border-slate-200 px-4 py-3">
         <div className="flex items-center gap-2">
           <p className={`text-sm font-semibold ${titleColor}`}>{title}</p>
