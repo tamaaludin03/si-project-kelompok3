@@ -1453,9 +1453,9 @@ Tanggal Approval: ${approvedAt ? new Date(approvedAt).toLocaleString("id-ID") : 
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
     const monthEnd   = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
 
-    const cutiUnit = unitFilter ? { pegawai: { unit: unitFilter } } : {};
-    const izinUnit = unitFilter ? { pegawai: { unit: unitFilter } } : {};
-
+    // Statistik approval tidak difilter per unit — konsisten dengan antrian
+    // findPendingForDirektur yang menampilkan seluruh pengajuan pending_direktur.
+    // Hanya totalPegawai yang tetap dihitung per unit Direktur.
     const [
       totalPegawai,
       cutiPending, cutiDisetujui, cutiDitolak,
@@ -1466,25 +1466,25 @@ Tanggal Approval: ${approvedAt ? new Date(approvedAt).toLocaleString("id-ID") : 
         ? this.prisma.pegawai.count({ where: { unit: unitFilter } })
         : this.prisma.pegawai.count(),
       this.prisma.cuti.count({
-        where: { ...cutiUnit, status: "pending_direktur", created_at: { gte: monthStart, lte: monthEnd } },
+        where: { status: "pending_direktur", created_at: { gte: monthStart, lte: monthEnd } },
       }),
       this.prisma.cuti.count({
-        where: { ...cutiUnit, status: { in: ["disetujui_final", "selesai"] }, approved_at_direktur: { gte: monthStart, lte: monthEnd } },
+        where: { status: { in: ["disetujui_final", "selesai"] }, approved_at_direktur: { gte: monthStart, lte: monthEnd } },
       }),
       this.prisma.cuti.count({
-        where: { ...cutiUnit, status: "ditolak_direktur", approved_at_direktur: { gte: monthStart, lte: monthEnd } },
+        where: { status: "ditolak_direktur", approved_at_direktur: { gte: monthStart, lte: monthEnd } },
       }),
       this.prisma.izin.count({
-        where: { ...izinUnit, status: "pending_direktur", created_at: { gte: monthStart, lte: monthEnd } },
+        where: { status: "pending_direktur", created_at: { gte: monthStart, lte: monthEnd } },
       }),
       this.prisma.izin.count({
-        where: { ...izinUnit, status: "disetujui_final", approved_at_direktur: { gte: monthStart, lte: monthEnd } },
+        where: { status: "disetujui_final", approved_at_direktur: { gte: monthStart, lte: monthEnd } },
       }),
       this.prisma.izin.count({
-        where: { ...izinUnit, status: "ditolak_direktur", approved_at_direktur: { gte: monthStart, lte: monthEnd } },
+        where: { status: "ditolak_direktur", approved_at_direktur: { gte: monthStart, lte: monthEnd } },
       }),
       this.prisma.cuti.findMany({
-        where: { ...cutiUnit, status: { in: ["disetujui_final", "ditolak_direktur", "selesai"] }, approved_at_direktur: { not: null } },
+        where: { status: { in: ["disetujui_final", "ditolak_direktur", "selesai"] }, approved_at_direktur: { not: null } },
         orderBy: { approved_at_direktur: "desc" },
         take: 5,
         select: {
@@ -1494,7 +1494,7 @@ Tanggal Approval: ${approvedAt ? new Date(approvedAt).toLocaleString("id-ID") : 
         },
       }),
       this.prisma.izin.findMany({
-        where: { ...izinUnit, status: { in: ["disetujui_final", "ditolak_direktur"] }, approved_at_direktur: { not: null } },
+        where: { status: { in: ["disetujui_final", "ditolak_direktur"] }, approved_at_direktur: { not: null } },
         orderBy: { approved_at_direktur: "desc" },
         take: 5,
         select: {
