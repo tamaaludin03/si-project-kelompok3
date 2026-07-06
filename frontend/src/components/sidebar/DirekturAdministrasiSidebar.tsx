@@ -35,7 +35,6 @@ const sections: SidebarSection[] = [
           { label: "Approval Izin", href: "/direktur/approval-izin", countKey: "izinPending" },
         ],
       },
-      { label: "Dokumen Masuk", href: "/direktur/dokumen-masuk", countKey: "approvalPending" },
       { label: "Riwayat Approval", href: "/direktur/riwayat-approval" },
       { label: "Laporan Cuti & Izin", href: "/direktur/laporan-cuti-izin" },
     ],
