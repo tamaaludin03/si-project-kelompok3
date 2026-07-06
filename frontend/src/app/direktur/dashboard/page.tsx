@@ -297,7 +297,7 @@ export default function DirekturDashboardPage() {
               </p>
             </div>
             <button
-              onClick={() => router.push("/direktur/approval")}
+              onClick={() => router.push("/direktur/approval-cuti")}
               className="flex shrink-0 items-center gap-1.5 rounded-xl bg-violet-700 px-5 py-2 text-sm font-bold text-white transition hover:bg-violet-800 active:scale-95"
             >
               Review Sekarang {Ic.chevron}
@@ -312,8 +312,8 @@ export default function DirekturDashboardPage() {
 
           <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
             {[
-              { title: "Persetujuan Cuti",  desc: "Tinjau & setujui cuti",   href: "/direktur/approval",          color: "from-violet-50 to-white",  border: "border-violet-100",  arrow: "text-violet-500"  },
-              { title: "Persetujuan Izin",  desc: "Tinjau & setujui izin",   href: "/direktur/approval",          color: "from-emerald-50 to-white", border: "border-emerald-100", arrow: "text-emerald-500" },
+              { title: "Persetujuan Cuti",  desc: "Tinjau & setujui cuti",   href: "/direktur/approval-cuti",     color: "from-violet-50 to-white",  border: "border-violet-100",  arrow: "text-violet-500"  },
+              { title: "Persetujuan Izin",  desc: "Tinjau & setujui izin",   href: "/direktur/approval-izin",     color: "from-emerald-50 to-white", border: "border-emerald-100", arrow: "text-emerald-500" },
               { title: "Riwayat Approval",  desc: "Keputusan yang lalu",     href: "/direktur/riwayat-approval",  color: "from-sky-50 to-white",     border: "border-sky-100",     arrow: "text-sky-500"     },
               { title: "Lihat Laporan",     desc: "Rekap cuti & izin",       href: "/direktur/laporan-cuti-izin", color: "from-amber-50 to-white",   border: "border-amber-100",   arrow: "text-amber-500"   },
             ].map(({ title, desc, href, color, border, arrow }) => (
@@ -350,7 +350,7 @@ export default function DirekturDashboardPage() {
               </div>
               <button
                 type="button"
-                onClick={() => router.push("/direktur/approval")}
+                onClick={() => router.push("/direktur/approval-cuti")}
                 className="rounded-xl border border-violet-200 bg-violet-50 px-4 py-2.5 text-sm font-semibold text-violet-600 transition hover:bg-violet-100 hover:border-violet-300 active:scale-95"
               >
                 Lihat Semua
@@ -442,7 +442,13 @@ export default function DirekturDashboardPage() {
                         <td className="px-4 py-3.5">
                           <button
                             type="button"
-                            onClick={() => router.push("/direktur/approval")}
+                            onClick={() =>
+                              router.push(
+                                item._kategori === "Cuti"
+                                  ? "/direktur/approval-cuti"
+                                  : "/direktur/approval-izin"
+                              )
+                            }
                             className="rounded-lg bg-violet-700 px-3 py-1.5 text-[11px] font-bold text-white transition hover:bg-violet-800"
                           >
                             Review
