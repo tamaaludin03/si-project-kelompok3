@@ -8,7 +8,13 @@ import {
   Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis,
 } from "recharts";
 import { API_BASE_URL } from "@/lib/api";
-const CHART_COLORS = ["#7c3aed", "#0ea5e9", "#10b981", "#ef4444", "#f59e0b"];
+const APPROVAL_STATUS_COLORS: Record<string, string> = {
+  "Menunggu": "#fbbf24",
+  "Disetujui KAUR": "#38bdf8",
+  "Disetujui KABAG": "#818cf8",
+  "Final": "#10b981",
+  "Ditolak": "#fb7185",
+};
 
 type ProfileType = {
   nip?: string; nama?: string; jabatan?: string; role?: string; unit?: string;
@@ -483,8 +489,8 @@ export default function DireksiDashboard() {
                   label={(p: any) => `${((p.percent ?? 0) * 100).toFixed(0)}%`}
                   labelLine={{ stroke: "#c4b5fd", strokeWidth: 1 }}
                 >
-                  {approvalChartData.map((entry, i) => (
-                    <Cell key={`ap-${entry.name}`} fill={CHART_COLORS[i % CHART_COLORS.length]} />
+                  {approvalChartData.map((entry) => (
+                    <Cell key={`ap-${entry.name}`} fill={APPROVAL_STATUS_COLORS[entry.name] ?? "#94a3b8"} />
                   ))}
                 </Pie>
                 <Tooltip content={<CustomTooltip />} />
