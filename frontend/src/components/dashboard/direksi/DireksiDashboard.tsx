@@ -116,14 +116,21 @@ const STAT_CFG = {
   rose:    { border: "border-rose-100",    bg: "bg-rose-50/60",    num: "text-rose-700",    label: "text-rose-600"    },
   slate:   { border: "border-slate-200",   bg: "bg-slate-50/60",   num: "text-slate-800",   label: "text-slate-500"   },
 };
-function StatCard({ title, value, color, icon }: {
-  title: string; value: number; color: keyof typeof STAT_CFG; icon: ReactNode;
+function StatCard({ title, value, color, icon, badge }: {
+  title: string; value: number; color: keyof typeof STAT_CFG; icon: ReactNode; badge?: string;
 }) {
   const c = STAT_CFG[color];
   return (
     <div className={`rounded-3xl border ${c.border} ${c.bg} p-5 shadow-sm`}>
-      <div className={`mb-3 ${c.label}`}>{icon}</div>
-      <p className={`text-[2.1rem] font-black leading-none tracking-tight ${c.num}`}>
+      <div className={`mb-3 flex items-center justify-between ${c.label}`}>
+        {icon}
+        {badge && (
+          <span className="rounded-full bg-amber-400 px-2.5 py-0.5 text-[10px] font-bold text-white">
+            {badge}
+          </span>
+        )}
+      </div>
+      <p className={`${badge ? "text-[2.6rem]" : "text-[2.1rem]"} font-black leading-none tracking-tight ${c.num}`}>
         {String(value).padStart(2, "0")}
       </p>
       <p className={`mt-2 text-[11.5px] font-semibold ${c.label}`}>{title}</p>
@@ -198,6 +205,7 @@ export default function DireksiDashboard() {
   const [refreshing, setRefreshing] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
   const [error, setError]         = useState("");
+  const [showAllUnits, setShowAllUnits] = useState(false);
 
   function handleLogout() {
     ["token","user","nip","nama","role","jabatan","unit","internal_role"].forEach(k => localStorage.removeItem(k));
@@ -368,7 +376,7 @@ export default function DireksiDashboard() {
         .direksi-wrap,.direksi-wrap *{font-family:'Plus Jakarta Sans',sans-serif!important;-webkit-font-smoothing:antialiased}
       `}</style>
 
-      <main className="direksi-wrap min-h-screen space-y-5 bg-transparent p-3 sm:p-6">
+      <main className="direksi-wrap min-h-screen space-y-8 bg-transparent p-3 sm:p-6">
 
         {/* ══ 1. HEADER ══════════════════════════════════════════════════════════ */}
         <section className="rounded-3xl border border-slate-100 bg-white p-4 sm:p-7 shadow-sm">
@@ -451,25 +459,13 @@ export default function DireksiDashboard() {
         </div>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           <StatCard title="Disetujui Final"  value={summary?.approvedFinal  ?? 0} color="emerald" icon={Ic.check}    />
-          <StatCard title="Menunggu"         value={summary?.pending        ?? 0} color="amber"   icon={Ic.pending}  />
+          <StatCard title="Menunggu"         value={summary?.pending        ?? 0} color="amber"   icon={Ic.pending}  badge="Perlu Aksi" />
           <StatCard title="Sedang Diproses"  value={summary?.proses         ?? 0} color="sky"     icon={Ic.process}  />
           <StatCard title="Ditolak"          value={summary?.ditolak        ?? 0} color="rose"    icon={Ic.xCircle}  />
         </div>
 
-        {/* ══ 3. INSIGHT CARDS ═══════════════════════════════════════════════════ */}
+        {/* ══ 3. INSIGHT CARD ════════════════════════════════════════════════════ */}
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-          <InsightCard
-            color="amber"
-            title="Antrean Approval"
-            value={`${summary?.pending ?? 0} menunggu · ${summary?.proses ?? 0} diproses`}
-            desc="Pantau pengajuan yang masih berjalan."
-          />
-          <InsightCard
-            color="emerald"
-            title="Output Final"
-            value={`${summary?.approvedFinal ?? 0} final · ${summary?.suratDiterbitkan ?? 0} surat terbit`}
-            desc="Pengajuan selesai dan surat cuti diterbitkan."
-          />
           <InsightCard
             color="violet"
             title="Unit Terbanyak"
@@ -535,19 +531,30 @@ export default function DireksiDashboard() {
               <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-violet-500">Distribusi Unit</p>
               <h2 className="mt-1 text-lg font-extrabold text-slate-900">Rekap Pengajuan Per Unit</h2>
               <p className="mt-0.5 text-sm text-slate-400">
-                Distribusi cuti, izin, approval, dan penolakan per unit kerja.
+                {showAllUnits ? "Seluruh unit kerja." : "3 unit dengan pengajuan terbanyak."}
               </p>
             </div>
-            <span className="rounded-full border border-violet-100 bg-violet-50 px-3 py-1 text-xs font-bold text-violet-600">
-              {summary?.rekapPerUnit?.length ?? 0} unit
-            </span>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={exportExcel}
+                className="flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-600 transition hover:bg-emerald-100 active:scale-95"
+              >
+                {Ic.download} Excel
+              </button>
+              <span className="rounded-full border border-violet-100 bg-violet-50 px-3 py-1 text-xs font-bold text-violet-600">
+                {summary?.rekapPerUnit?.length ?? 0} unit
+              </span>
+            </div>
           </div>
 
           <div className="mt-5 overflow-x-auto rounded-2xl border border-slate-100">
             <table className="min-w-full divide-y divide-slate-100 text-sm">
               <thead className="bg-slate-50">
                 <tr>
-                  {["Unit","Cuti","Izin","Total","Menunggu","Diproses","Final","Ditolak"].map(h => (
+                  {(showAllUnits
+                    ? ["Unit","Cuti","Izin","Total","Menunggu","Diproses","Final","Ditolak"]
+                    : ["Unit","Total","Menunggu","Final"]
+                  ).map(h => (
                     <th key={h} className="whitespace-nowrap px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-slate-400">
                       {h}
                     </th>
@@ -556,8 +563,12 @@ export default function DireksiDashboard() {
               </thead>
               <tbody className="divide-y divide-slate-50 bg-white">
                 {(summary?.rekapPerUnit || []).length === 0 ? (
-                  <tr><td colSpan={8} className="px-4 py-10 text-center text-sm text-slate-400">Belum ada data per unit.</td></tr>
-                ) : (
+                  <tr>
+                    <td colSpan={showAllUnits ? 8 : 4} className="px-4 py-10 text-center text-sm text-slate-400">
+                      Belum ada data per unit.
+                    </td>
+                  </tr>
+                ) : showAllUnits ? (
                   summary?.rekapPerUnit?.map(u => (
                     <tr key={u.unit} className="transition-colors hover:bg-violet-50/30">
                       <td className="px-4 py-3 font-semibold text-slate-800">{u.unit}</td>
@@ -570,10 +581,31 @@ export default function DireksiDashboard() {
                       <td className="px-4 py-3 text-rose-600">{u.ditolak}</td>
                     </tr>
                   ))
+                ) : (
+                  [...(summary?.rekapPerUnit || [])]
+                    .sort((a, b) => b.totalPengajuan - a.totalPengajuan)
+                    .slice(0, 3)
+                    .map(u => (
+                      <tr key={u.unit} className="transition-colors hover:bg-violet-50/30">
+                        <td className="px-4 py-3 font-semibold text-slate-800">{u.unit}</td>
+                        <td className="px-4 py-3 font-bold text-slate-900">{u.totalPengajuan}</td>
+                        <td className="px-4 py-3 text-slate-600">{u.pending}</td>
+                        <td className="px-4 py-3 text-emerald-700 font-semibold">{u.approvedFinal}</td>
+                      </tr>
+                    ))
                 )}
               </tbody>
             </table>
           </div>
+
+          <button
+            onClick={() => setShowAllUnits(v => !v)}
+            className="mt-4 text-sm font-semibold text-violet-600 hover:underline active:opacity-70"
+          >
+            {showAllUnits
+              ? "Sembunyikan"
+              : `Lihat semua unit (${summary?.rekapPerUnit?.length ?? 0})`}
+          </button>
         </section>
 
         {/* ══ 6. PENGAJUAN + STR/SIP ═════════════════════════════════════════════ */}
